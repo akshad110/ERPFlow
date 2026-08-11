@@ -13,6 +13,10 @@ interface ChallanRow extends RowDataPacket {
   customer_id: string;
   customer_name: string | null;
   business_name: string | null;
+  customer_mobile: string | null;
+  customer_email: string | null;
+  customer_address: string | null;
+  customer_gst_number: string | null;
   total_quantity: number;
   status: ChallanStatus;
   created_by: string;
@@ -38,6 +42,10 @@ export const mapChallan = (row: ChallanRow): Challan => ({
   customerId: row.customer_id,
   customerName: row.customer_name || undefined,
   businessName: row.business_name,
+  customerMobile: row.customer_mobile,
+  customerEmail: row.customer_email,
+  customerAddress: row.customer_address,
+  customerGstNumber: row.customer_gst_number,
   totalQuantity: Number(row.total_quantity),
   status: row.status,
   createdBy: row.created_by,
@@ -107,6 +115,10 @@ export const findChallans = async (filters: {
       ch.customer_id,
       c.name AS customer_name,
       c.business_name,
+      c.mobile AS customer_mobile,
+      c.email AS customer_email,
+      c.address AS customer_address,
+      c.gst_number AS customer_gst_number,
       ch.total_quantity,
       ch.status,
       ch.created_by,
@@ -143,6 +155,10 @@ export const findChallanById = async (
       ch.customer_id,
       c.name AS customer_name,
       c.business_name,
+      c.mobile AS customer_mobile,
+      c.email AS customer_email,
+      c.address AS customer_address,
+      c.gst_number AS customer_gst_number,
       ch.total_quantity,
       ch.status,
       ch.created_by,

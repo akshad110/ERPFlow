@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import {
   ArrowLeft,
   CheckCircle2,
+  FileDown,
   Pencil,
   UserRound,
   XCircle,
@@ -16,6 +17,7 @@ import { StatusBadge } from "@/components/common/StatusBadge";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { getErrorMessage } from "@/lib/api";
+import { downloadChallanInvoicePdf } from "@/lib/challanInvoicePdf";
 import { challanService } from "@/services/challan.service";
 import type { Challan } from "@/types/challan.types";
 
@@ -139,6 +141,16 @@ export default function ChallanDetails() {
   const items = challan.items ?? [];
   const valueTotal = items.reduce((sum, item) => sum + Number(item.totalPrice), 0);
   const actionPending = confirmMutation.isPending || cancelMutation.isPending;
+  const canExportPdf = items.length > 0 && challan.status !== "CANCELLED";
+
+  const handleExportPdf = () => {
+    try {
+      downloadChallanInvoicePdf(challan);
+      toast.success("Invoice PDF downloaded");
+    } catch {
+      toast.error("Could not export invoice PDF");
+    }
+  };
 
   return (
     <div>
@@ -160,6 +172,18 @@ export default function ChallanDetails() {
               <ArrowLeft className="size-3.5" />
               Back
             </Link>
+            {canExportPdf ? (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="rounded-md border-[#b7d9cb] bg-[#f4fbf7] text-erp-dark hover:bg-[#eaf7f1]"
+                onClick={handleExportPdf}
+              >
+                <FileDown className="size-3.5" />
+                Export PDF
+              </Button>
+            ) : null}
             {canManage && challan.status === "DRAFT" ? (
               <Link
                 to={`/challans/${challan.id}/edit`}
@@ -325,6 +349,32 @@ export default function ChallanDetails() {
             {challan.businessName ? (
               <p className="mt-1 text-sm text-slate-500">{challan.businessName}</p>
             ) : null}
+            <dl className="mt-3 space-y-1.5 text-sm text-slate-600">
+              {challan.customerGstNumber ? (
+                <div>
+                  <span className="text-slate-400">GSTIN · </span>
+                  {challan.customerGstNumber}
+                </div>
+              ) : null}
+              {challan.customerMobile ? (
+                <div>
+                  <span className="text-slate-400">Mobile · </span>
+                  {challan.customerMobile}
+                </div>
+              ) : null}
+              {challan.customerEmail ? (
+                <div>
+                  <span className="text-slate-400">Email · </span>
+                  {challan.customerEmail}
+                </div>
+              ) : null}
+              {challan.customerAddress ? (
+                <div>
+                  <span className="text-slate-400">Address · </span>
+                  {challan.customerAddress}
+                </div>
+              ) : null}
+            </dl>
             <Link
               to={`/customers/${challan.customerId}`}
               className="mt-3 inline-flex text-sm font-medium text-erp-dark hover:underline"

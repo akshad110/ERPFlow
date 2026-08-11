@@ -17,6 +17,10 @@ export type Challan = {
   customerId: string;
   customerName?: string;
   businessName?: string | null;
+  customerMobile?: string | null;
+  customerEmail?: string | null;
+  customerAddress?: string | null;
+  customerGstNumber?: string | null;
   totalQuantity: number;
   status: ChallanStatus;
   createdBy: string;

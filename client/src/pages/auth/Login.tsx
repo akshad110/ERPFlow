@@ -9,6 +9,7 @@ import {
   ClipboardList,
   Eye,
   EyeOff,
+  FileDown,
   LockKeyhole,
   Mail,
   Package,
@@ -48,6 +49,11 @@ const highlights = [
     icon: ClipboardList,
     title: "Stock-safe challans",
     text: "Confirm only when inventory is available.",
+  },
+  {
+    icon: FileDown,
+    title: "Invoice PDF export",
+    text: "Download a clean tax invoice from any challan.",
   },
 ];
 
