@@ -4,6 +4,7 @@ import authRoutes from "./routes/auth.routes";
 import customerRoutes from "./routes/customer.routes";
 import productRoutes from "./routes/product.routes";
 import challanRoutes from "./routes/challan.routes";
+import dashboardRoutes from "./routes/dashboard.routes";
 
 const app = express();
 
@@ -27,5 +28,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/customers", customerRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/challans", challanRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 export default app;
