@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
+    "dev": "tsx watch --env-file=.env src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js",
-    "seed": "tsx database/seed.ts"
+    "start": "node --env-file=.env dist/server.js",
+    "seed": "tsx --env-file=.env database/seed.ts"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +26,8 @@
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "mysql2": "^3.23.3"
+    "jsonwebtoken": "^9.0.3",
+    "mysql2": "^3.23.3",
+    "zod": "^4.4.3"
   }
 }
