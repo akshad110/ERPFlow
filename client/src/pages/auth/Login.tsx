@@ -148,8 +148,8 @@ export default function Login() {
   });
 
   return (
-    <div className="grid min-h-svh lg:grid-cols-[1.08fr_0.92fr]">
-      <section className="relative hidden overflow-hidden lg:block">
+    <div className="grid min-h-svh lg:h-svh lg:overflow-hidden lg:grid-cols-[1.05fr_0.95fr]">
+      <section className="relative hidden h-full overflow-hidden lg:block">
         <img
           src={LOGIN_VISUAL}
           alt="Business analytics dashboard on a laptop"
@@ -158,35 +158,35 @@ export default function Login() {
         <div className="absolute inset-0 bg-[#0b1624]/55" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#071018] via-[#071018]/55 to-[#071018]/20" />
 
-        <div className="relative flex h-full flex-col justify-between p-10 xl:p-14">
+        <div className="relative flex h-full flex-col justify-between px-8 py-6 xl:px-12 xl:py-8">
           <div
             className="animate-[login-fade-up_0.7s_ease-out_both]"
             style={{ animationDelay: "80ms" }}
           >
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs text-slate-200 backdrop-blur-sm">
-              <Boxes className="size-3.5 text-erp-light" />
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[11px] text-slate-200 backdrop-blur-sm">
+              <Boxes className="size-3 text-erp-light" />
               Wholesale operations portal
             </div>
           </div>
 
-          <div className="max-w-xl space-y-5">
+          <div className="max-w-xl space-y-3">
             <div
               className="animate-[login-fade-up_0.75s_ease-out_both]"
               style={{ animationDelay: "180ms" }}
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2.5">
                 <img
                   src="/ERPFlow_Green___White_Logo-removebg-preview.png"
                   alt="ERPFlow"
-                  className="size-14 object-contain drop-shadow-md"
+                  className="size-10 object-contain drop-shadow-md"
                 />
-                <p className="text-sm font-medium tracking-[0.18em] text-erp-light uppercase">
+                <p className="text-xs font-medium tracking-[0.18em] text-erp-light uppercase">
                   ERPFlow
                 </p>
               </div>
-              <h1 className="mt-3 text-4xl font-semibold tracking-tight text-white xl:text-5xl">
-                Run wholesale ops
-                <span className="block text-erp-light">without the chaos</span>
+              <h1 className="mt-2 text-3xl font-semibold tracking-tight text-white xl:text-4xl">
+                Run wholesale ops{" "}
+                <span className="text-erp-light">without the chaos</span>
               </h1>
             </div>
 
@@ -194,9 +194,9 @@ export default function Login() {
               className="animate-[login-fade-up_0.75s_ease-out_both]"
               style={{ animationDelay: "320ms" }}
             >
-              <p className="text-sm text-slate-300">Built for teams who need to</p>
-              <div className="mt-2 min-h-[2.75rem]">
-                <p className="text-2xl font-semibold tracking-tight text-white xl:text-3xl">
+              <p className="text-xs text-slate-300">Built for teams who need to</p>
+              <div className="mt-1 min-h-[1.75rem]">
+                <p className="text-lg font-semibold tracking-tight text-white xl:text-xl">
                   <span>{typedText}</span>
                   <span
                     aria-hidden
@@ -207,7 +207,7 @@ export default function Login() {
             </div>
 
             <p
-              className="max-w-md text-sm leading-relaxed text-slate-300 animate-[login-fade-up_0.75s_ease-out_both]"
+              className="max-w-md text-xs leading-relaxed text-slate-300 animate-[login-fade-up_0.75s_ease-out_both]"
               style={{ animationDelay: "420ms" }}
             >
               One workspace for sales, warehouse and accounts — customers,
@@ -215,37 +215,37 @@ export default function Login() {
             </p>
 
             <div
-              className="pt-3 animate-[login-fade-up_0.8s_ease-out_both]"
+              className="pt-1 animate-[login-fade-up_0.8s_ease-out_both]"
               style={{ animationDelay: "540ms" }}
             >
-              <p className="mb-4 text-[11px] font-semibold tracking-[0.16em] text-erp-light/80 uppercase">
+              <p className="mb-2 text-[10px] font-semibold tracking-[0.14em] text-erp-light/80 uppercase">
                 How teams use ERPFlow
               </p>
-              <ul className="relative space-y-0 border-l border-erp-light/35 pl-5">
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-2.5">
                 {highlights.map((item, index) => {
                   const Icon = item.icon;
                   return (
                     <li
                       key={item.title}
-                      className="relative pb-5 last:pb-0"
+                      className="flex gap-2.5"
                       style={{
                         animationDelay: `${560 + index * 90}ms`,
                       }}
                     >
-                      <span className="absolute top-1.5 -left-[1.55rem] flex size-5 items-center justify-center rounded-full bg-[#0b1624] ring-2 ring-erp-light/70">
-                        <Icon className="size-2.5 text-erp-light" />
+                      <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-white/10 ring-1 ring-erp-light/50">
+                        <Icon className="size-3 text-erp-light" />
                       </span>
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-[11px] font-semibold tabular-nums text-erp-light/70">
-                          0{index + 1}
-                        </span>
-                        <p className="text-sm font-medium text-white">
+                      <div className="min-w-0">
+                        <p className="text-[13px] font-medium leading-tight text-white">
+                          <span className="mr-1 text-[10px] tabular-nums text-erp-light/70">
+                            0{index + 1}
+                          </span>
                           {item.title}
                         </p>
+                        <p className="mt-0.5 text-[11px] leading-snug text-slate-300">
+                          {item.text}
+                        </p>
                       </div>
-                      <p className="mt-1 max-w-sm text-xs leading-relaxed text-slate-300">
-                        {item.text}
-                      </p>
                     </li>
                   );
                 })}
@@ -254,7 +254,7 @@ export default function Login() {
           </div>
 
           <p
-            className="text-xs text-slate-400 animate-[login-fade-up_0.8s_ease-out_both]"
+            className="text-[11px] text-slate-400 animate-[login-fade-up_0.8s_ease-out_both]"
             style={{ animationDelay: "680ms" }}
           >
             Secure role-based access for Admin, Sales, Warehouse and Accounts.
@@ -262,20 +262,20 @@ export default function Login() {
         </div>
       </section>
 
-      <section className="relative flex items-center justify-center bg-gradient-to-br from-[#dff3ea] via-[#e7f4ee] to-[#cfe8dc] px-4 py-10 sm:px-8">
-        <div className="surface-panel w-full max-w-md rounded-2xl p-6 animate-[login-fade-up_0.65s_ease-out_both] sm:p-8">
-          <div className="mb-8">
-            <div className="mb-6 flex items-center gap-2.5">
+      <section className="relative flex items-center justify-center bg-gradient-to-br from-[#dff3ea] via-[#e7f4ee] to-[#cfe8dc] px-4 py-8 sm:px-8 lg:h-full lg:overflow-hidden lg:py-6">
+        <div className="surface-panel w-full max-w-md rounded-2xl p-5 animate-[login-fade-up_0.65s_ease-out_both] sm:p-6">
+          <div className="mb-5">
+            <div className="mb-4 flex items-center gap-2.5">
               <img
                 src="/ERPFlow_Green___White_Logo-removebg-preview.png"
                 alt="ERPFlow"
-                className="size-11 object-contain"
+                className="size-9 object-contain"
               />
               <p className="text-sm font-semibold tracking-tight text-erp-dark">
                 ERPFlow
               </p>
             </div>
-            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-erp-ink">
+            <h2 className="text-xl font-semibold tracking-tight text-erp-ink sm:text-2xl">
               Sign in
             </h2>
             <p className="mt-1 text-sm text-[#45685f]">
@@ -283,7 +283,7 @@ export default function Login() {
             </p>
           </div>
 
-          <form className="space-y-4" onSubmit={onSubmit} noValidate>
+          <form className="space-y-3.5" onSubmit={onSubmit} noValidate>
             <div className="space-y-1.5">
               <Label htmlFor="email">Email</Label>
               <div className="relative">
@@ -355,7 +355,7 @@ export default function Login() {
             </Button>
           </form>
 
-          <p className="mt-6 text-center text-xs text-slate-400">
+          <p className="mt-4 text-center text-xs text-slate-400">
             Having trouble? Ask your admin to reset access.
           </p>
         </div>
