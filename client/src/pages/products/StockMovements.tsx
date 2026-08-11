@@ -14,6 +14,7 @@ import {
 import { PageHeader } from "@/components/common/PageHeader";
 import { LoadingState } from "@/components/common/LoadingState";
 import { EmptyState } from "@/components/common/EmptyState";
+import { ErrorState } from "@/components/common/ErrorState";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import { NativeSelect } from "@/components/common/NativeSelect";
 import { Button } from "@/components/ui/button";
@@ -112,13 +113,44 @@ export default function StockMovements() {
   });
 
   if (productQuery.isLoading) {
-    return <LoadingState label="Loading product..." />;
+    return (
+      <div>
+        <PageHeader title="Product" description="Loading stock details..." />
+        <LoadingState label="Loading product..." />
+      </div>
+    );
   }
 
   if (productQuery.isError || !productQuery.data) {
     return (
-      <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-        {getErrorMessage(productQuery.error, "Product not found")}
+      <div>
+        <PageHeader
+          title="Product"
+          actions={
+            <Link
+              to="/products"
+              className="inline-flex h-8 items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-700 hover:bg-slate-50"
+            >
+              <ArrowLeft className="size-3.5" />
+              Back
+            </Link>
+          }
+        />
+        <EmptyState
+          title="Product not found"
+          description={getErrorMessage(
+            productQuery.error,
+            "This product may have been deleted or the link is invalid."
+          )}
+          action={
+            <Link
+              to="/products"
+              className="inline-flex h-9 items-center rounded-md bg-teal-700 px-3 text-sm text-white hover:bg-teal-800"
+            >
+              Back to products
+            </Link>
+          }
+        />
       </div>
     );
   }
@@ -293,7 +325,31 @@ export default function StockMovements() {
               <LoadingState label="Loading movements..." className="py-8" />
             ) : null}
 
-            {!movementsQuery.isLoading && movements.length === 0 ? (
+            {movementsQuery.isError ? (
+              <ErrorState
+                title="Could not load movements"
+                message={getErrorMessage(
+                  movementsQuery.error,
+                  "Failed to load stock movements"
+                )}
+                action={
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="border-red-200 bg-white"
+                    onClick={() => movementsQuery.refetch()}
+                  >
+                    Try again
+                  </Button>
+                }
+                className="py-4"
+              />
+            ) : null}
+
+            {!movementsQuery.isLoading &&
+            !movementsQuery.isError &&
+            movements.length === 0 ? (
               <EmptyState
                 title="No movements yet"
                 description="Stock changes will appear here after IN/OUT updates."
@@ -302,34 +358,40 @@ export default function StockMovements() {
               />
             ) : null}
 
-            {movements.map((movement) => (
-              <article
-                key={movement.id}
-                className="rounded-lg border border-slate-200 bg-slate-50/70 px-3 py-3"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <StatusBadge
-                        label={movement.movementType}
-                        tone={
-                          movement.movementType === "IN" ? "success" : "warning"
-                        }
-                      />
-                      <span className="text-sm font-semibold tabular-nums text-slate-800">
-                        {movement.quantity}
-                      </span>
+            {!movementsQuery.isError
+              ? movements.map((movement) => (
+                  <article
+                    key={movement.id}
+                    className="rounded-lg border border-slate-200 bg-slate-50/70 px-3 py-3"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <StatusBadge
+                            label={movement.movementType}
+                            tone={
+                              movement.movementType === "IN"
+                                ? "success"
+                                : "warning"
+                            }
+                          />
+                          <span className="text-sm font-semibold tabular-nums text-slate-800">
+                            {movement.quantity}
+                          </span>
+                        </div>
+                        <p className="mt-1 text-sm text-slate-700">
+                          {movement.reason}
+                        </p>
+                      </div>
+                      <p className="text-right text-xs text-slate-500">
+                        {movement.createdByName || "User"}
+                        <br />
+                        {formatDateTime(movement.createdAt)}
+                      </p>
                     </div>
-                    <p className="mt-1 text-sm text-slate-700">{movement.reason}</p>
-                  </div>
-                  <p className="text-right text-xs text-slate-500">
-                    {movement.createdByName || "User"}
-                    <br />
-                    {formatDateTime(movement.createdAt)}
-                  </p>
-                </div>
-              </article>
-            ))}
+                  </article>
+                ))
+              : null}
           </div>
         </section>
       </div>

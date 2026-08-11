@@ -9,6 +9,8 @@ node_modules/
 # build
 dist/
 build/
+client/dist/
+server/dist/
 client/src/**/*.js
 client/src/**/*.jsx
 server/src/**/*.js
@@ -23,3 +25,6 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+
+# docker
+*.tar

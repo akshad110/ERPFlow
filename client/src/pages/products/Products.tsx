@@ -1,20 +1,16 @@
 import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import {
-  Boxes,
-  Eye,
-  ImageOff,
-  Pencil,
-  Plus,
-  Search,
-  Trash2,
-} from "lucide-react";
+import { Boxes, Plus, Search } from "lucide-react";
 import { PageHeader } from "@/components/common/PageHeader";
 import { LoadingState } from "@/components/common/LoadingState";
 import { EmptyState } from "@/components/common/EmptyState";
+import { ErrorState } from "@/components/common/ErrorState";
 import { StatusBadge } from "@/components/common/StatusBadge";
+import { EntityAvatar } from "@/components/common/EntityAvatar";
+import { ListPanel } from "@/components/common/ListPanel";
+import { RowActionsMenu } from "@/components/common/RowActionsMenu";
 import { NativeSelect } from "@/components/common/NativeSelect";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,6 +29,7 @@ function formatMoney(value: number) {
 export default function Products() {
   const { hasRole } = useAuth();
   const canManage = hasRole("ADMIN", "WAREHOUSE");
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -40,6 +37,7 @@ export default function Products() {
   const searchFromUrl = searchParams.get("search") || "";
   const category = searchParams.get("category") || "";
   const lowStockParam = searchParams.get("lowStock") || "";
+  const hasFilters = Boolean(searchFromUrl || category || lowStockParam);
 
   const [searchInput, setSearchInput] = useState(searchFromUrl);
 
@@ -110,74 +108,100 @@ export default function Products() {
     setSearchParams(next);
   };
 
+  const clearFilters = () => {
+    setSearchParams(new URLSearchParams());
+    setSearchInput("");
+  };
+
   const products = productsQuery.data?.products ?? [];
   const pagination = productsQuery.data?.pagination;
+  const showInitialLoading = productsQuery.isLoading && !productsQuery.data;
+  const isRefetching =
+    productsQuery.isFetching &&
+    !productsQuery.isLoading &&
+    Boolean(productsQuery.data);
 
   return (
     <div>
       <PageHeader
         title="Products"
         description="Catalog, stock levels and warehouse locations."
+        breadcrumbs={[
+          { label: "Inventory", to: "/products" },
+          { label: "Products" },
+        ]}
+        meta={
+          pagination ? (
+            <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600">
+              {pagination.total} total
+            </span>
+          ) : null
+        }
         actions={
           canManage ? (
             <Link
               to="/products/new"
-              className="inline-flex h-9 items-center gap-2 rounded-md bg-teal-700 px-3 text-sm font-medium text-white hover:bg-teal-800"
+              className="inline-flex h-9 items-center gap-2 rounded-xl bg-teal-700 px-3.5 text-sm font-medium text-white shadow-sm hover:bg-teal-800"
             >
               <Plus className="size-4" />
-              Add product
+              New product
             </Link>
           ) : null
         }
       />
 
-      <div className="mb-4 grid gap-3 rounded-xl border border-slate-200 bg-white p-3 shadow-sm sm:grid-cols-[1fr_auto_auto]">
-        <div className="relative">
-          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-400" />
-          <Input
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="Search name, SKU or category..."
-            className="bg-white pl-9"
-          />
-        </div>
-        <Input
-          value={category}
-          onChange={(e) => updateParam("category", e.target.value)}
-          placeholder="Category"
-          className="min-w-40 bg-white"
-        />
-        <NativeSelect
-          value={lowStockParam}
-          onChange={(e) => updateParam("lowStock", e.target.value)}
-          className="min-w-40"
-        >
-          <option value="">All stock</option>
-          <option value="true">Low stock only</option>
-          <option value="false">Healthy stock</option>
-        </NativeSelect>
-      </div>
-
-      {productsQuery.isLoading ? <LoadingState label="Loading products..." /> : null}
-
-      {productsQuery.isError ? (
-        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {getErrorMessage(productsQuery.error, "Failed to load products")}
-        </div>
+      {showInitialLoading ? (
+        <LoadingState label="Loading products..." />
       ) : null}
 
-      {!productsQuery.isLoading && !productsQuery.isError && products.length === 0 ? (
+      {productsQuery.isError ? (
+        <ErrorState
+          title="Could not load products"
+          message={getErrorMessage(
+            productsQuery.error,
+            "Failed to load products"
+          )}
+          action={
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="border-red-200 bg-white"
+              onClick={() => productsQuery.refetch()}
+            >
+              Try again
+            </Button>
+          }
+        />
+      ) : null}
+
+      {!showInitialLoading &&
+      !productsQuery.isError &&
+      products.length === 0 ? (
         <EmptyState
-          title="No products found"
-          description="Try another filter, or add a product to the catalog."
+          title={hasFilters ? "No matching products" : "No products yet"}
+          description={
+            hasFilters
+              ? "Try clearing search or stock filters."
+              : "Add a product to start tracking warehouse stock."
+          }
           icon={Boxes}
           action={
-            canManage ? (
+            hasFilters ? (
+              <Button
+                type="button"
+                variant="outline"
+                className="rounded-xl border-slate-200 bg-white"
+                onClick={clearFilters}
+              >
+                Clear filters
+              </Button>
+            ) : canManage ? (
               <Link
                 to="/products/new"
-                className="inline-flex h-9 items-center rounded-md bg-teal-700 px-3 text-sm text-white hover:bg-teal-800"
+                className="inline-flex h-9 items-center rounded-xl bg-teal-700 px-3 text-sm text-white hover:bg-teal-800"
               >
-                Add product
+                New product
               </Link>
             ) : null
           }
@@ -185,47 +209,119 @@ export default function Products() {
       ) : null}
 
       {products.length > 0 ? (
-        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+        <ListPanel
+          dimmed={isRefetching}
+          toolbar={
+            <>
+              <div>
+                <p className="text-sm font-semibold text-slate-800">
+                  Product list
+                </p>
+                <p className="text-xs text-slate-400">
+                  {products.length} on this page
+                </p>
+              </div>
+              <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+                <div className="relative sm:w-64">
+                  <Search className="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-slate-400" />
+                  <Input
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    placeholder="Search name, SKU or category..."
+                    className="h-9 rounded-xl border-slate-200 bg-slate-50 pl-9"
+                  />
+                </div>
+                <Input
+                  value={category}
+                  onChange={(e) => updateParam("category", e.target.value)}
+                  placeholder="Category"
+                  className="h-9 min-w-36 rounded-xl border-slate-200 bg-slate-50"
+                />
+                <NativeSelect
+                  value={lowStockParam}
+                  onChange={(e) => updateParam("lowStock", e.target.value)}
+                  className="h-9 min-w-36 rounded-xl"
+                >
+                  <option value="">All stock</option>
+                  <option value="true">Low stock only</option>
+                  <option value="false">Healthy stock</option>
+                </NativeSelect>
+              </div>
+            </>
+          }
+          footer={
+            pagination && pagination.totalPages > 1 ? (
+              <>
+                <p>
+                  Page {pagination.page} of {pagination.totalPages}
+                </p>
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="rounded-xl border-slate-200 bg-white"
+                    disabled={pagination.page <= 1 || isRefetching}
+                    onClick={() =>
+                      updateParam("page", String(pagination.page - 1))
+                    }
+                  >
+                    Previous
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="rounded-xl border-slate-200 bg-white"
+                    disabled={
+                      pagination.page >= pagination.totalPages || isRefetching
+                    }
+                    onClick={() =>
+                      updateParam("page", String(pagination.page + 1))
+                    }
+                  >
+                    Next
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <p>{pagination?.total ?? products.length} products</p>
+            )
+          }
+        >
           <div className="overflow-x-auto">
             <table className="min-w-full text-left text-sm">
-              <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
-                <tr>
+              <thead>
+                <tr className="border-b border-slate-100 text-[11px] tracking-wide text-slate-400 uppercase">
                   <th className="px-4 py-3 font-medium">Product</th>
                   <th className="px-4 py-3 font-medium">SKU</th>
                   <th className="px-4 py-3 font-medium">Category</th>
                   <th className="px-4 py-3 font-medium">Price</th>
                   <th className="px-4 py-3 font-medium">Stock</th>
                   <th className="px-4 py-3 font-medium">Status</th>
-                  <th className="px-4 py-3 font-medium text-right">Actions</th>
+                  <th className="px-4 py-3 font-medium text-right"> </th>
                 </tr>
               </thead>
               <tbody>
                 {products.map((product) => (
                   <tr
                     key={product.id}
-                    className="border-t border-slate-100 hover:bg-slate-50/70"
+                    className="border-b border-slate-50 transition-colors last:border-0 hover:bg-slate-50/80"
                   >
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="flex size-10 items-center justify-center overflow-hidden rounded-md border border-slate-200 bg-slate-50">
-                          {product.imageUrl ? (
-                            <img
-                              src={product.imageUrl}
-                              alt={product.name}
-                              className="size-full object-cover"
-                            />
-                          ) : (
-                            <ImageOff className="size-4 text-slate-300" />
-                          )}
-                        </div>
-                        <div>
+                        <EntityAvatar
+                          name={product.name}
+                          imageUrl={product.imageUrl}
+                        />
+                        <div className="min-w-0">
                           <Link
                             to={`/products/${product.id}/stock`}
-                            className="font-medium text-slate-800 hover:text-teal-700"
+                            className="font-semibold text-slate-800 hover:text-teal-700"
                           >
                             {product.name}
                           </Link>
-                          <p className="text-xs text-slate-400">
+                          <p className="truncate text-xs text-slate-400">
                             {product.warehouseLocation || "No location"}
                           </p>
                         </div>
@@ -234,16 +330,23 @@ export default function Products() {
                     <td className="px-4 py-3 font-mono text-xs text-slate-600">
                       {product.sku}
                     </td>
-                    <td className="px-4 py-3 text-slate-600">{product.category}</td>
+                    <td className="px-4 py-3 text-slate-600">
+                      {product.category}
+                    </td>
                     <td className="px-4 py-3 tabular-nums text-slate-700">
                       {formatMoney(product.unitPrice)}
                     </td>
-                    <td className="px-4 py-3 tabular-nums text-slate-700">
-                      {product.currentStock}
-                      <span className="text-xs text-slate-400">
-                        {" "}
-                        / alert {product.minStockAlert}
-                      </span>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`size-1.5 rounded-full ${
+                            product.isLowStock ? "bg-amber-500" : "bg-emerald-500"
+                          }`}
+                        />
+                        <span className="tabular-nums text-slate-700">
+                          {product.currentStock}
+                        </span>
+                      </div>
                     </td>
                     <td className="px-4 py-3">
                       <StatusBadge
@@ -251,79 +354,45 @@ export default function Products() {
                         tone={product.isLowStock ? "warning" : "success"}
                       />
                     </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center justify-end gap-1">
-                        <Link
-                          to={`/products/${product.id}/stock`}
-                          className="rounded-md p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-800"
-                          title="Stock"
-                        >
-                          <Eye className="size-4" />
-                        </Link>
-                        {canManage ? (
-                          <>
-                            <Link
-                              to={`/products/${product.id}/edit`}
-                              className="rounded-md p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-800"
-                              title="Edit"
-                            >
-                              <Pencil className="size-4" />
-                            </Link>
-                            <button
-                              type="button"
-                              className="rounded-md p-2 text-slate-500 hover:bg-red-50 hover:text-red-600"
-                              title="Delete"
-                              disabled={deleteMutation.isPending}
-                              onClick={() => {
-                                const confirmed = window.confirm(
-                                  `Delete ${product.name}?`
-                                );
-                                if (confirmed) deleteMutation.mutate(product.id);
-                              }}
-                            >
-                              <Trash2 className="size-4" />
-                            </button>
-                          </>
-                        ) : null}
-                      </div>
+                    <td className="px-4 py-3 text-right">
+                      <RowActionsMenu
+                        actions={[
+                          {
+                            label: "View stock",
+                            onSelect: () =>
+                              navigate(`/products/${product.id}/stock`),
+                          },
+                          ...(canManage
+                            ? [
+                                {
+                                  label: "Edit item",
+                                  onSelect: () =>
+                                    navigate(`/products/${product.id}/edit`),
+                                },
+                                {
+                                  label: "Delete item",
+                                  destructive: true,
+                                  separatorBefore: true,
+                                  onSelect: () => {
+                                    const confirmed = window.confirm(
+                                      `Delete ${product.name}?`
+                                    );
+                                    if (confirmed) {
+                                      deleteMutation.mutate(product.id);
+                                    }
+                                  },
+                                },
+                              ]
+                            : []),
+                        ]}
+                      />
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-
-          {pagination && pagination.totalPages > 1 ? (
-            <div className="flex items-center justify-between border-t border-slate-100 px-4 py-3 text-sm text-slate-500">
-              <p>
-                Page {pagination.page} of {pagination.totalPages} ·{" "}
-                {pagination.total} total
-              </p>
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="border-slate-200 bg-white"
-                  disabled={pagination.page <= 1}
-                  onClick={() => updateParam("page", String(pagination.page - 1))}
-                >
-                  Previous
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="border-slate-200 bg-white"
-                  disabled={pagination.page >= pagination.totalPages}
-                  onClick={() => updateParam("page", String(pagination.page + 1))}
-                >
-                  Next
-                </Button>
-              </div>
-            </div>
-          ) : null}
-        </div>
+        </ListPanel>
       ) : null}
     </div>
   );

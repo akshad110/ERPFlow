@@ -54,7 +54,15 @@ export function getErrorMessage(error: unknown, fallback = "Something went wrong
       if (firstFieldError) return firstFieldError;
     }
 
-    if (data?.message) return data.message;
+    if (data?.message) {
+      if (
+        typeof data.availableStock === "number" &&
+        typeof data.requestedQuantity === "number"
+      ) {
+        return `${data.message} (available: ${data.availableStock}, requested: ${data.requestedQuantity})`;
+      }
+      return data.message;
+    }
 
     if (error.code === "ERR_NETWORK") {
       return "Cannot reach the server. Check if the API is running.";

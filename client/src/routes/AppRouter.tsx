@@ -11,6 +11,8 @@ import Products from "@/pages/products/Products";
 import ProductForm from "@/pages/products/ProductForm";
 import StockMovements from "@/pages/products/StockMovements";
 import Challans from "@/pages/challans/Challans";
+import CreateChallan from "@/pages/challans/CreateChallan";
+import ChallanDetails from "@/pages/challans/ChallanDetails";
 
 export function AppRouter() {
   return (
@@ -50,6 +52,17 @@ export function AppRouter() {
             <Route path="/products/:id/stock" element={<StockMovements />} />
 
             <Route path="/challans" element={<Challans />} />
+            <Route element={<RoleRoutes allowedRoles={["ADMIN", "SALES"]} />}>
+              <Route
+                path="/challans/new"
+                element={<CreateChallan mode="create" />}
+              />
+              <Route
+                path="/challans/:id/edit"
+                element={<CreateChallan mode="edit" />}
+              />
+            </Route>
+            <Route path="/challans/:id" element={<ChallanDetails />} />
           </Route>
         </Route>
 

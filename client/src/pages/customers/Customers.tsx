@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Eye, Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { PageHeader } from "@/components/common/PageHeader";
 import { LoadingState } from "@/components/common/LoadingState";
 import { EmptyState } from "@/components/common/EmptyState";
+import { ErrorState } from "@/components/common/ErrorState";
 import { StatusBadge } from "@/components/common/StatusBadge";
+import { EntityAvatar } from "@/components/common/EntityAvatar";
+import { ListPanel } from "@/components/common/ListPanel";
+import { RowActionsMenu } from "@/components/common/RowActionsMenu";
 import { NativeSelect } from "@/components/common/NativeSelect";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,6 +28,7 @@ const statusTone = {
 export default function Customers() {
   const { hasRole } = useAuth();
   const canManage = hasRole("ADMIN", "SALES");
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -33,6 +38,7 @@ export default function Customers() {
   const customerType = (searchParams.get("customerType") || "") as
     | CustomerType
     | "";
+  const hasFilters = Boolean(searchFromUrl || status || customerType);
 
   const [searchInput, setSearchInput] = useState(searchFromUrl);
 
@@ -90,80 +96,99 @@ export default function Customers() {
     setSearchParams(next);
   };
 
+  const clearFilters = () => {
+    setSearchParams(new URLSearchParams());
+    setSearchInput("");
+  };
+
   const pagination = customersQuery.data?.pagination;
   const customers = customersQuery.data?.customers ?? [];
+  const showInitialLoading = customersQuery.isLoading && !customersQuery.data;
+  const isRefetching =
+    customersQuery.isFetching &&
+    !customersQuery.isLoading &&
+    Boolean(customersQuery.data);
 
   return (
     <div>
       <PageHeader
         title="Customers"
         description="Search leads and accounts, then open a record for follow-ups."
+        breadcrumbs={[
+          { label: "CRM", to: "/customers" },
+          { label: "Customers" },
+        ]}
+        meta={
+          pagination ? (
+            <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600">
+              {pagination.total} total
+            </span>
+          ) : null
+        }
         actions={
           canManage ? (
             <Link
               to="/customers/new"
-              className="inline-flex h-9 items-center gap-2 rounded-md bg-teal-700 px-3 text-sm font-medium text-white hover:bg-teal-800"
+              className="inline-flex h-9 items-center gap-2 rounded-xl bg-teal-700 px-3.5 text-sm font-medium text-white shadow-sm hover:bg-teal-800"
             >
               <Plus className="size-4" />
-              Add customer
+              New customer
             </Link>
           ) : null
         }
       />
 
-      <div className="mb-4 grid gap-3 rounded-xl border border-slate-200 bg-white p-3 shadow-sm sm:grid-cols-[1fr_auto_auto]">
-        <div className="relative">
-          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-400" />
-          <Input
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="Search name, mobile, email, business..."
-            className="bg-white pl-9"
-          />
-        </div>
-        <NativeSelect
-          value={status}
-          onChange={(e) => updateParam("status", e.target.value)}
-          className="min-w-36"
-        >
-          <option value="">All statuses</option>
-          <option value="LEAD">Lead</option>
-          <option value="ACTIVE">Active</option>
-          <option value="INACTIVE">Inactive</option>
-        </NativeSelect>
-        <NativeSelect
-          value={customerType}
-          onChange={(e) => updateParam("customerType", e.target.value)}
-          className="min-w-40"
-        >
-          <option value="">All types</option>
-          <option value="RETAIL">Retail</option>
-          <option value="WHOLESALE">Wholesale</option>
-          <option value="DISTRIBUTOR">Distributor</option>
-        </NativeSelect>
-      </div>
-
-      {customersQuery.isLoading ? (
+      {showInitialLoading ? (
         <LoadingState label="Loading customers..." />
       ) : null}
 
       {customersQuery.isError ? (
-        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {getErrorMessage(customersQuery.error, "Failed to load customers")}
-        </div>
+        <ErrorState
+          title="Could not load customers"
+          message={getErrorMessage(
+            customersQuery.error,
+            "Failed to load customers"
+          )}
+          action={
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="border-red-200 bg-white"
+              onClick={() => customersQuery.refetch()}
+            >
+              Try again
+            </Button>
+          }
+        />
       ) : null}
 
-      {!customersQuery.isLoading && !customersQuery.isError && customers.length === 0 ? (
+      {!showInitialLoading &&
+      !customersQuery.isError &&
+      customers.length === 0 ? (
         <EmptyState
-          title="No customers found"
-          description="Try another search, or add a new customer to get started."
+          title={hasFilters ? "No matching customers" : "No customers yet"}
+          description={
+            hasFilters
+              ? "Try clearing search or filters."
+              : "Add a lead or active account to get started."
+          }
           action={
-            canManage ? (
+            hasFilters ? (
+              <Button
+                type="button"
+                variant="outline"
+                className="rounded-xl border-slate-200 bg-white"
+                onClick={clearFilters}
+              >
+                Clear filters
+              </Button>
+            ) : canManage ? (
               <Link
                 to="/customers/new"
-                className="inline-flex h-9 items-center rounded-md bg-teal-700 px-3 text-sm text-white hover:bg-teal-800"
+                className="inline-flex h-9 items-center rounded-xl bg-teal-700 px-3 text-sm text-white hover:bg-teal-800"
               >
-                Add customer
+                New customer
               </Link>
             ) : null
           }
@@ -171,39 +196,126 @@ export default function Customers() {
       ) : null}
 
       {customers.length > 0 ? (
-        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+        <ListPanel
+          dimmed={isRefetching}
+          toolbar={
+            <>
+              <div>
+                <p className="text-sm font-semibold text-slate-800">
+                  Customer list
+                </p>
+                <p className="text-xs text-slate-400">
+                  {customers.length} on this page
+                </p>
+              </div>
+              <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+                <div className="relative sm:w-64">
+                  <Search className="pointer-events-none absolute top-1/2 left-3 size-3.5 -translate-y-1/2 text-slate-400" />
+                  <Input
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    placeholder="Search name, mobile, email..."
+                    className="h-9 rounded-xl border-slate-200 bg-slate-50 pl-9"
+                  />
+                </div>
+                <NativeSelect
+                  value={status}
+                  onChange={(e) => updateParam("status", e.target.value)}
+                  className="h-9 min-w-32 rounded-xl"
+                >
+                  <option value="">All statuses</option>
+                  <option value="LEAD">Lead</option>
+                  <option value="ACTIVE">Active</option>
+                  <option value="INACTIVE">Inactive</option>
+                </NativeSelect>
+                <NativeSelect
+                  value={customerType}
+                  onChange={(e) => updateParam("customerType", e.target.value)}
+                  className="h-9 min-w-36 rounded-xl"
+                >
+                  <option value="">All types</option>
+                  <option value="RETAIL">Retail</option>
+                  <option value="WHOLESALE">Wholesale</option>
+                  <option value="DISTRIBUTOR">Distributor</option>
+                </NativeSelect>
+              </div>
+            </>
+          }
+          footer={
+            pagination && pagination.totalPages > 1 ? (
+              <>
+                <p>
+                  Page {pagination.page} of {pagination.totalPages}
+                </p>
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="rounded-xl border-slate-200 bg-white"
+                    disabled={pagination.page <= 1 || isRefetching}
+                    onClick={() =>
+                      updateParam("page", String(pagination.page - 1))
+                    }
+                  >
+                    Previous
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="rounded-xl border-slate-200 bg-white"
+                    disabled={
+                      pagination.page >= pagination.totalPages || isRefetching
+                    }
+                    onClick={() =>
+                      updateParam("page", String(pagination.page + 1))
+                    }
+                  >
+                    Next
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <p>{pagination?.total ?? customers.length} customers</p>
+            )
+          }
+        >
           <div className="overflow-x-auto">
             <table className="min-w-full text-left text-sm">
-              <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
-                <tr>
-                  <th className="px-4 py-3 font-medium">Name</th>
-                  <th className="px-4 py-3 font-medium">Business</th>
+              <thead>
+                <tr className="border-b border-slate-100 text-[11px] tracking-wide text-slate-400 uppercase">
+                  <th className="px-4 py-3 font-medium">Customer</th>
                   <th className="px-4 py-3 font-medium">Type</th>
                   <th className="px-4 py-3 font-medium">Status</th>
                   <th className="px-4 py-3 font-medium">Mobile</th>
                   <th className="px-4 py-3 font-medium">Follow-up</th>
-                  <th className="px-4 py-3 font-medium text-right">Actions</th>
+                  <th className="px-4 py-3 font-medium text-right"> </th>
                 </tr>
               </thead>
               <tbody>
                 {customers.map((customer) => (
                   <tr
                     key={customer.id}
-                    className="border-t border-slate-100 hover:bg-slate-50/70"
+                    className="border-b border-slate-50 transition-colors last:border-0 hover:bg-slate-50/80"
                   >
                     <td className="px-4 py-3">
-                      <Link
-                        to={`/customers/${customer.id}`}
-                        className="font-medium text-slate-800 hover:text-teal-700"
-                      >
-                        {customer.name}
-                      </Link>
-                      {customer.email ? (
-                        <p className="text-xs text-slate-400">{customer.email}</p>
-                      ) : null}
-                    </td>
-                    <td className="px-4 py-3 text-slate-600">
-                      {customer.businessName || "—"}
+                      <div className="flex items-center gap-3">
+                        <EntityAvatar name={customer.name} />
+                        <div className="min-w-0">
+                          <Link
+                            to={`/customers/${customer.id}`}
+                            className="font-semibold text-slate-800 hover:text-teal-700"
+                          >
+                            {customer.name}
+                          </Link>
+                          <p className="truncate text-xs text-slate-400">
+                            {customer.businessName ||
+                              customer.email ||
+                              customer.customerType}
+                          </p>
+                        </div>
+                      </div>
                     </td>
                     <td className="px-4 py-3 text-slate-600">
                       {customer.customerType}
@@ -220,85 +332,45 @@ export default function Customers() {
                     <td className="px-4 py-3 text-slate-500">
                       {customer.followUpDate || "—"}
                     </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center justify-end gap-1">
-                        <Link
-                          to={`/customers/${customer.id}`}
-                          className="rounded-md p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-800"
-                          title="View"
-                        >
-                          <Eye className="size-4" />
-                        </Link>
-                        {canManage ? (
-                          <>
-                            <Link
-                              to={`/customers/${customer.id}/edit`}
-                              className="rounded-md p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-800"
-                              title="Edit"
-                            >
-                              <Pencil className="size-4" />
-                            </Link>
-                            <button
-                              type="button"
-                              className="rounded-md p-2 text-slate-500 hover:bg-red-50 hover:text-red-600"
-                              title="Delete"
-                              disabled={deleteMutation.isPending}
-                              onClick={() => {
-                                const confirmed = window.confirm(
-                                  `Delete ${customer.name}? This cannot be undone.`
-                                );
-                                if (confirmed) {
-                                  deleteMutation.mutate(customer.id);
-                                }
-                              }}
-                            >
-                              <Trash2 className="size-4" />
-                            </button>
-                          </>
-                        ) : null}
-                      </div>
+                    <td className="px-4 py-3 text-right">
+                      <RowActionsMenu
+                        actions={[
+                          {
+                            label: "View details",
+                            onSelect: () =>
+                              navigate(`/customers/${customer.id}`),
+                          },
+                          ...(canManage
+                            ? [
+                                {
+                                  label: "Edit item",
+                                  onSelect: () =>
+                                    navigate(`/customers/${customer.id}/edit`),
+                                },
+                                {
+                                  label: "Delete item",
+                                  destructive: true,
+                                  separatorBefore: true,
+                                  onSelect: () => {
+                                    const confirmed = window.confirm(
+                                      `Delete ${customer.name}? This cannot be undone.`
+                                    );
+                                    if (confirmed) {
+                                      deleteMutation.mutate(customer.id);
+                                    }
+                                  },
+                                },
+                              ]
+                            : []),
+                        ]}
+                      />
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-
-          {pagination && pagination.totalPages > 1 ? (
-            <div className="flex items-center justify-between border-t border-slate-100 px-4 py-3 text-sm text-slate-500">
-              <p>
-                Page {pagination.page} of {pagination.totalPages} ·{" "}
-                {pagination.total} total
-              </p>
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="border-slate-200 bg-white"
-                  disabled={pagination.page <= 1}
-                  onClick={() => updateParam("page", String(pagination.page - 1))}
-                >
-                  Previous
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="border-slate-200 bg-white"
-                  disabled={pagination.page >= pagination.totalPages}
-                  onClick={() => {
-                    const next = new URLSearchParams(searchParams);
-                    next.set("page", String(pagination.page + 1));
-                    setSearchParams(next);
-                  }}
-                >
-                  Next
-                </Button>
-              </div>
-            </div>
-          ) : null}
-        </div>
+        </ListPanel>
       ) : null}
     </div>
   );

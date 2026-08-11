@@ -22,7 +22,7 @@ export function AppLayout() {
   const location = useLocation();
 
   return (
-    <div className="flex min-h-svh bg-[#f3f5f7] text-slate-900">
+    <div className="flex min-h-svh bg-[#f4f6f8] text-slate-900">
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="flex min-w-0 flex-1 flex-col">
@@ -31,7 +31,9 @@ export function AppLayout() {
           title={resolveTitle(location.pathname)}
         />
         <main className="flex-1 px-4 py-5 sm:px-6 lg:px-8">
-          <Outlet />
+          <div className="mx-auto w-full max-w-[1400px]">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>

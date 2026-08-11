@@ -6,9 +6,13 @@
   "scripts": {
     "dev": "tsx watch --env-file=.env src/server.ts",
     "build": "tsc",
-    "start": "node --env-file=.env dist/server.js",
+    "start": "node dist/server.js",
+    "start:local": "node --env-file=.env dist/server.js",
     "seed": "tsx --env-file=.env database/seed.ts",
     "migrate:product-image": "tsx --env-file=.env database/migrate-product-image.ts"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "keywords": [],
   "author": "",

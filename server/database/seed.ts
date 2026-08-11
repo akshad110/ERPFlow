@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
+import type { ResultSetHeader, RowDataPacket } from "mysql2";
 import { pool } from "../src/config/database.js";
 
 dotenv.config();
@@ -9,29 +10,25 @@ const seedDatabase = async () => {
   try {
     console.log("🌱 Starting database seed...");
     const password = "Admin@123";
-
     const passwordHash = await bcrypt.hash(password, 12);
+
     const users = [
       {
-        id: crypto.randomUUID(),
         name: "System Admin",
         email: "admin@erpflow.com",
         role: "ADMIN",
       },
       {
-        id: crypto.randomUUID(),
         name: "Sales User",
         email: "sales@erpflow.com",
         role: "SALES",
       },
       {
-        id: crypto.randomUUID(),
         name: "Warehouse User",
         email: "warehouse@erpflow.com",
         role: "WAREHOUSE",
       },
       {
-        id: crypto.randomUUID(),
         name: "Accounts User",
         email: "accounts@erpflow.com",
         role: "ACCOUNTS",
@@ -41,30 +38,31 @@ const seedDatabase = async () => {
     for (const user of users) {
       await pool.execute(
         `
-        INSERT INTO users (
-          id,
-          name,
-          email,
-          password_hash,
-          role
-        )
+        INSERT INTO users (id, name, email, password_hash, role)
         VALUES (?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+          name = VALUES(name),
+          password_hash = VALUES(password_hash),
+          role = VALUES(role)
         `,
-        [
-          user.id,
-          user.name,
-          user.email,
-          passwordHash,
-          user.role,
-        ]
+        [crypto.randomUUID(), user.name, user.email, passwordHash, user.role]
       );
     }
 
-    console.log("✅ Users seeded successfully");
+    console.log("✅ Users seeded (insert or update)");
+
+    const [userRows] = await pool.execute<RowDataPacket[]>(
+      `SELECT id, email, role FROM users WHERE email IN (?, ?, ?, ?)`,
+      users.map((u) => u.email)
+    );
+
+    const warehouseUser = userRows.find((u) => u.role === "WAREHOUSE");
+    if (!warehouseUser) {
+      throw new Error("Warehouse user not found after seed");
+    }
 
     const customers = [
       {
-        id: crypto.randomUUID(),
         name: "Rahul Sharma",
         mobile: "9876543210",
         email: "rahul@abctraders.com",
@@ -77,7 +75,6 @@ const seedDatabase = async () => {
         notes: "Regular wholesale customer",
       },
       {
-        id: crypto.randomUUID(),
         name: "Priya Patel",
         mobile: "9876543211",
         email: "priya@xyzretail.com",
@@ -90,7 +87,6 @@ const seedDatabase = async () => {
         notes: "Interested in bulk purchase",
       },
       {
-        id: crypto.randomUUID(),
         name: "Amit Shah",
         mobile: "9876543212",
         email: "amit@kumarco.com",
@@ -105,25 +101,25 @@ const seedDatabase = async () => {
     ];
 
     for (const customer of customers) {
+      const [existing] = await pool.execute<RowDataPacket[]>(
+        `SELECT id FROM customers WHERE mobile = ? LIMIT 1`,
+        [customer.mobile]
+      );
+
+      if (existing.length > 0) {
+        continue;
+      }
+
       await pool.execute(
         `
         INSERT INTO customers (
-          id,
-          name,
-          mobile,
-          email,
-          business_name,
-          gst_number,
-          customer_type,
-          address,
-          status,
-          follow_up_date,
-          notes
+          id, name, mobile, email, business_name, gst_number,
+          customer_type, address, status, follow_up_date, notes
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `,
         [
-          customer.id,
+          crypto.randomUUID(),
           customer.name,
           customer.mobile,
           customer.email,
@@ -138,12 +134,10 @@ const seedDatabase = async () => {
       );
     }
 
-    console.log("✅ Customers seeded successfully");
-
+    console.log("✅ Customers seeded (skipped existing)");
 
     const products = [
       {
-        id: crypto.randomUUID(),
         name: "Wireless Keyboard",
         sku: "KB001",
         category: "Electronics",
@@ -153,7 +147,6 @@ const seedDatabase = async () => {
         warehouseLocation: "A-01",
       },
       {
-        id: crypto.randomUUID(),
         name: "Wireless Mouse",
         sku: "MS001",
         category: "Electronics",
@@ -163,7 +156,6 @@ const seedDatabase = async () => {
         warehouseLocation: "A-02",
       },
       {
-        id: crypto.randomUUID(),
         name: "USB-C Cable",
         sku: "CB001",
         category: "Accessories",
@@ -173,7 +165,6 @@ const seedDatabase = async () => {
         warehouseLocation: "B-01",
       },
       {
-        id: crypto.randomUUID(),
         name: "Laptop Stand",
         sku: "LS001",
         category: "Accessories",
@@ -185,22 +176,22 @@ const seedDatabase = async () => {
     ];
 
     for (const product of products) {
-      await pool.execute(
+      const [result] = await pool.execute<ResultSetHeader>(
         `
         INSERT INTO products (
-          id,
-          name,
-          sku,
-          category,
-          unit_price,
-          current_stock,
-          min_stock_alert,
-          warehouse_location
+          id, name, sku, category, unit_price,
+          current_stock, min_stock_alert, warehouse_location
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+          name = VALUES(name),
+          category = VALUES(category),
+          unit_price = VALUES(unit_price),
+          min_stock_alert = VALUES(min_stock_alert),
+          warehouse_location = VALUES(warehouse_location)
         `,
         [
-          product.id,
+          crypto.randomUUID(),
           product.name,
           product.sku,
           product.category,
@@ -210,71 +201,54 @@ const seedDatabase = async () => {
           product.warehouseLocation,
         ]
       );
+
+      // Only create initial stock movement for newly inserted products
+      if (result.affectedRows === 1) {
+        const [rows] = await pool.execute<RowDataPacket[]>(
+          `SELECT id, current_stock FROM products WHERE sku = ? LIMIT 1`,
+          [product.sku]
+        );
+        const saved = rows[0];
+        if (!saved) continue;
+
+        await pool.execute(
+          `
+          INSERT INTO stock_movements (
+            id, product_id, quantity, movement_type, reason, created_by
+          )
+          VALUES (?, ?, ?, 'IN', ?, ?)
+          `,
+          [
+            crypto.randomUUID(),
+            saved.id,
+            saved.current_stock,
+            "Initial stock",
+            warehouseUser.id,
+          ]
+        );
+      }
     }
 
-    console.log("✅ Products seeded successfully");
-
-
-    const warehouseUser = users.find(
-      (user) => user.role === "WAREHOUSE"
-    );
-
-    if (!warehouseUser) {
-      throw new Error("Warehouse user not found");
-    }
-
-    for (const product of products) {
-      await pool.execute(
-        `
-        INSERT INTO stock_movements (
-          id,
-          product_id,
-          quantity,
-          movement_type,
-          reason,
-          created_by
-        )
-        VALUES (?, ?, ?, 'IN', ?, ?)
-        `,
-        [
-          crypto.randomUUID(),
-          product.id,
-          product.currentStock,
-          "Initial stock",
-          warehouseUser.id,
-        ]
-      );
-    }
-
-    console.log("✅ Stock movements seeded successfully");
+    console.log("✅ Products seeded (insert or update)");
+    console.log("✅ Stock movements seeded for new products only");
 
     console.log("");
     console.log("🎉 Database seeded successfully!");
     console.log("");
     console.log("Test credentials:");
     console.log("--------------------------------");
-    console.log("ADMIN:");
-    console.log("admin@erpflow.com / Admin@123");
-    console.log("");
-    console.log("SALES:");
-    console.log("sales@erpflow.com / Admin@123");
-    console.log("");
-    console.log("WAREHOUSE:");
-    console.log("warehouse@erpflow.com / Admin@123");
-    console.log("");
-    console.log("ACCOUNTS:");
-    console.log("accounts@erpflow.com / Admin@123");
+    console.log("ADMIN:     admin@erpflow.com / Admin@123");
+    console.log("SALES:     sales@erpflow.com / Admin@123");
+    console.log("WAREHOUSE: warehouse@erpflow.com / Admin@123");
+    console.log("ACCOUNTS:  accounts@erpflow.com / Admin@123");
     console.log("--------------------------------");
 
     await pool.end();
-
     process.exit(0);
   } catch (error) {
     console.error("❌ Database seed failed:");
     console.error(error);
-
     await pool.end();
-
     process.exit(1);
   }
 };

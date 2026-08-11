@@ -282,7 +282,11 @@ export default function CustomerDetails() {
             {!followUpsQuery.isLoading && followUps.length === 0 ? (
               <EmptyState
                 title="No follow-ups yet"
-                description="Add the first note when you speak with this customer."
+                description={
+                  canManage
+                    ? "Add the first note when you speak with this customer."
+                    : "Sales and Admin can log CRM follow-ups here."
+                }
                 className="py-8"
               />
             ) : null}

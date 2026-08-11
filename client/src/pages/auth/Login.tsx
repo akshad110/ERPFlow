@@ -1,9 +1,19 @@
-import { useState } from "react";
-import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { AlertCircle, Boxes, Eye, EyeOff, LockKeyhole, Mail } from "lucide-react";
+import {
+  AlertCircle,
+  Boxes,
+  ClipboardList,
+  Eye,
+  EyeOff,
+  LockKeyhole,
+  Mail,
+  Package,
+  Users,
+} from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,11 +23,40 @@ import { getErrorMessage } from "@/lib/api";
 import { loginSchema, type LoginFormValues } from "@/schemas/auth.schema";
 import { authService } from "@/services/auth.service";
 
+const LOGIN_VISUAL =
+  "https://static.vecteezy.com/system/resources/thumbnails/059/230/815/small/on-a-laptop-comprehensive-dashboards-visualize-business-data-presenting-charts-and-graphs-photo.jpg";
+
+const rotatingLines = [
+  "Track every customer follow-up",
+  "Keep warehouse stock accurate",
+  "Confirm challans without stock risk",
+  "Give each role the right access",
+];
+
+const highlights = [
+  {
+    icon: Users,
+    title: "CRM that stays warm",
+    text: "Leads, accounts and follow-ups in one place.",
+  },
+  {
+    icon: Package,
+    title: "Stock you can trust",
+    text: "Live inventory with low-stock alerts.",
+  },
+  {
+    icon: ClipboardList,
+    title: "Stock-safe challans",
+    text: "Confirm only when inventory is available.",
+  },
+];
+
 export default function Login() {
   const { isAuthenticated, login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [showPassword, setShowPassword] = useState(false);
+  const [typedText, setTypedText] = useState("");
 
   const from =
     (location.state as { from?: { pathname?: string } } | null)?.from?.pathname ||
@@ -47,6 +86,53 @@ export default function Login() {
     },
   });
 
+  useEffect(() => {
+    let cancelled = false;
+    let timeoutId: number | undefined;
+    let phraseIndex = 0;
+    let charIndex = 0;
+    let deleting = false;
+
+    const tick = () => {
+      if (cancelled) return;
+
+      const full = rotatingLines[phraseIndex];
+
+      if (!deleting) {
+        charIndex += 1;
+        setTypedText(full.slice(0, charIndex));
+
+        if (charIndex === full.length) {
+          deleting = true;
+          timeoutId = window.setTimeout(tick, 1800);
+          return;
+        }
+
+        timeoutId = window.setTimeout(tick, 42);
+        return;
+      }
+
+      charIndex -= 1;
+      setTypedText(full.slice(0, charIndex));
+
+      if (charIndex === 0) {
+        deleting = false;
+        phraseIndex = (phraseIndex + 1) % rotatingLines.length;
+        timeoutId = window.setTimeout(tick, 280);
+        return;
+      }
+
+      timeoutId = window.setTimeout(tick, 24);
+    };
+
+    timeoutId = window.setTimeout(tick, 400);
+
+    return () => {
+      cancelled = true;
+      if (timeoutId) window.clearTimeout(timeoutId);
+    };
+  }, []);
+
   if (isAuthenticated) {
     return <Navigate to="/dashboard" replace />;
   }
@@ -56,55 +142,109 @@ export default function Login() {
   });
 
   return (
-    <div className="grid min-h-svh lg:grid-cols-[1.05fr_0.95fr]">
-      <section className="relative hidden overflow-hidden bg-[#15202b] text-white lg:flex lg:flex-col lg:justify-between lg:p-10 xl:p-14">
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.18]"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 20% 20%, #0f766e 0%, transparent 42%), radial-gradient(circle at 80% 0%, #334155 0%, transparent 35%), linear-gradient(135deg, transparent 0%, transparent 46%, rgba(255,255,255,0.04) 46%, rgba(255,255,255,0.04) 47%, transparent 47%)",
-          }}
+    <div className="grid min-h-svh lg:grid-cols-[1.08fr_0.92fr]">
+      <section className="relative hidden overflow-hidden lg:block">
+        <img
+          src={LOGIN_VISUAL}
+          alt="Business analytics dashboard on a laptop"
+          className="absolute inset-0 size-full object-cover animate-[login-zoom_18s_ease-in-out_infinite_alternate]"
         />
+        <div className="absolute inset-0 bg-[#0b1624]/55" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#071018] via-[#071018]/55 to-[#071018]/20" />
 
-        <div className="relative">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">
-            <Boxes className="size-3.5 text-teal-300" />
-            Wholesale operations
+        <div className="relative flex h-full flex-col justify-between p-10 xl:p-14">
+          <div
+            className="animate-[login-fade-up_0.7s_ease-out_both]"
+            style={{ animationDelay: "80ms" }}
+          >
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs text-slate-200 backdrop-blur-sm">
+              <Boxes className="size-3.5 text-teal-300" />
+              Wholesale operations portal
+            </div>
           </div>
-          <h1 className="mt-8 max-w-md text-4xl font-semibold tracking-tight xl:text-5xl">
-            ERPFlow
-          </h1>
-          <p className="mt-4 max-w-sm text-sm leading-relaxed text-slate-300 xl:text-base">
-            One place for your sales, warehouse and accounts teams to track
-            customers, stock and challans without spreadsheet chaos.
+
+          <div className="max-w-xl space-y-5">
+            <div
+              className="animate-[login-fade-up_0.75s_ease-out_both]"
+              style={{ animationDelay: "180ms" }}
+            >
+              <p className="text-sm font-medium tracking-[0.18em] text-teal-300 uppercase">
+                ERPFlow
+              </p>
+              <h1 className="mt-3 text-4xl font-semibold tracking-tight text-white xl:text-5xl">
+                Run wholesale ops
+                <span className="block text-teal-200">without the chaos</span>
+              </h1>
+            </div>
+
+            <div
+              className="animate-[login-fade-up_0.75s_ease-out_both]"
+              style={{ animationDelay: "320ms" }}
+            >
+              <p className="text-sm text-slate-300">Built for teams who need to</p>
+              <div className="mt-2 min-h-[2.75rem]">
+                <p className="text-2xl font-semibold tracking-tight text-white xl:text-3xl">
+                  <span>{typedText}</span>
+                  <span
+                    aria-hidden
+                    className="ml-0.5 inline-block h-[1.05em] w-[2px] translate-y-[0.12em] bg-teal-300 align-baseline animate-[login-caret_1s_steps(1)_infinite]"
+                  />
+                </p>
+              </div>
+            </div>
+
+            <p
+              className="max-w-md text-sm leading-relaxed text-slate-300 animate-[login-fade-up_0.75s_ease-out_both]"
+              style={{ animationDelay: "420ms" }}
+            >
+              One workspace for sales, warehouse and accounts — customers,
+              inventory and challans stay connected from quote to dispatch.
+            </p>
+
+            <div
+              className="grid gap-3 pt-2 animate-[login-fade-up_0.8s_ease-out_both] sm:grid-cols-3"
+              style={{ animationDelay: "540ms" }}
+            >
+              {highlights.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div
+                    key={item.title}
+                    className="rounded-2xl border border-white/10 bg-white/10 p-3.5 backdrop-blur-sm"
+                  >
+                    <Icon className="size-4 text-teal-300" />
+                    <p className="mt-2 text-sm font-medium text-white">
+                      {item.title}
+                    </p>
+                    <p className="mt-1 text-xs leading-relaxed text-slate-300">
+                      {item.text}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <p
+            className="text-xs text-slate-400 animate-[login-fade-up_0.8s_ease-out_both]"
+            style={{ animationDelay: "680ms" }}
+          >
+            Secure role-based access for Admin, Sales, Warehouse and Accounts.
           </p>
-        </div>
-
-        <div className="relative grid gap-3 text-sm text-slate-300">
-          <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-            <p className="font-medium text-white">Stock-safe challans</p>
-            <p className="mt-1 text-slate-400">
-              Confirm only when inventory is available. No negative stock.
-            </p>
-          </div>
-          <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-            <p className="font-medium text-white">Role-based access</p>
-            <p className="mt-1 text-slate-400">
-              Admin, Sales, Warehouse and Accounts each see what they need.
-            </p>
-          </div>
         </div>
       </section>
 
-      <section className="flex items-center justify-center bg-[#f3f5f7] px-4 py-10 sm:px-8">
-        <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-          <div className="mb-8 lg:hidden">
-            <p className="text-xl font-semibold text-slate-900">ERPFlow</p>
-            <p className="text-sm text-slate-500">Operations Portal</p>
-          </div>
-
-          <div className="mb-6">
-            <h2 className="text-2xl font-semibold tracking-tight text-slate-900">
+      <section className="relative flex items-center justify-center bg-[#f3f5f7] px-4 py-10 sm:px-8">
+        <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-sm animate-[login-fade-up_0.65s_ease-out_both] sm:p-8">
+          <div className="mb-8">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs text-slate-500 lg:hidden">
+              <Boxes className="size-3.5 text-teal-700" />
+              Wholesale operations
+            </div>
+            <p className="text-sm font-semibold tracking-tight text-teal-800">
+              ERPFlow
+            </p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">
               Sign in
             </h2>
             <p className="mt-1 text-sm text-slate-500">
@@ -184,17 +324,8 @@ export default function Login() {
             </Button>
           </form>
 
-          <div className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-500">
-            <p className="font-medium text-slate-700">Test logins</p>
-            <p className="mt-1">admin@erpflow.com / Admin@123</p>
-            <p>sales@erpflow.com / Admin@123</p>
-          </div>
-
-          <p className="mt-4 text-center text-xs text-slate-400">
-            Having trouble? Ask your admin to reset access.{" "}
-            <Link to="/login" className="text-teal-700 hover:underline">
-              Retry
-            </Link>
+          <p className="mt-6 text-center text-xs text-slate-400">
+            Having trouble? Ask your admin to reset access.
           </p>
         </div>
       </section>
