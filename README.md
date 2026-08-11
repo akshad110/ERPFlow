@@ -22,6 +22,21 @@
 
 ---
 
+Default seeded logins (password for all):
+
+```
+Admin@123
+```
+
+| Email                   |  Password    | Role      |
+| ----------------------- | ------------ | --------- |
+| `admin@erpflow.com`     |  `Admin@123` | ADMIN     |
+| `sales@erpflow.com`     |  `Admin@123` | SALES     |
+| `warehouse@erpflow.com` |  `Admin@123` | WAREHOUSE |
+| `accounts@erpflow.com`  |  `Admin@123` | ACCOUNTS  |
+
+---
+
 ## Technology Stack
 
 ### Frontend
@@ -260,22 +275,6 @@ Seed sample users and data:
 ```bash
 npm run seed
 ```
-
-Default seeded logins (password for all):
-
-```
-Admin@123
-```
-
-| Email                   | Role      |
-| ----------------------- | --------- |
-| `admin@erpflow.com`     | ADMIN     |
-| `sales@erpflow.com`     | SALES     |
-| `warehouse@erpflow.com` | WAREHOUSE |
-| `accounts@erpflow.com`  | ACCOUNTS  |
-
----
-
 ## Setup — Database
 
 1. Create a MySQL database (local or managed).
