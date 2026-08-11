@@ -1,10 +1,16 @@
-function App() {
+import { QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "@/components/ui/sonner";
+import { AuthProvider } from "@/context/AuthContext";
+import { queryClient } from "@/lib/queryClient";
+import { AppRouter } from "@/routes/AppRouter";
 
+export default function App() {
   return (
-    <>
-<h1 className='text-yellow-500'>Hello</h1>
-     </>
-  )
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <AppRouter />
+        <Toaster richColors position="top-right" closeButton />
+      </AuthProvider>
+    </QueryClientProvider>
+  );
 }
-
-export default App
