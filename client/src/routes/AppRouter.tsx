@@ -8,6 +8,8 @@ import Customers from "@/pages/customers/Customers";
 import CustomerDetails from "@/pages/customers/CustomerDetails";
 import CustomerForm from "@/pages/customers/CustomerForm";
 import Products from "@/pages/products/Products";
+import ProductForm from "@/pages/products/ProductForm";
+import StockMovements from "@/pages/products/StockMovements";
 import Challans from "@/pages/challans/Challans";
 
 export function AppRouter() {
@@ -22,7 +24,6 @@ export function AppRouter() {
             <Route path="/dashboard" element={<Dashboard />} />
 
             <Route path="/customers" element={<Customers />} />
-
             <Route element={<RoleRoutes allowedRoles={["ADMIN", "SALES"]} />}>
               <Route
                 path="/customers/new"
@@ -33,10 +34,21 @@ export function AppRouter() {
                 element={<CustomerForm mode="edit" />}
               />
             </Route>
-
             <Route path="/customers/:id" element={<CustomerDetails />} />
 
             <Route path="/products" element={<Products />} />
+            <Route element={<RoleRoutes allowedRoles={["ADMIN", "WAREHOUSE"]} />}>
+              <Route
+                path="/products/new"
+                element={<ProductForm mode="create" />}
+              />
+              <Route
+                path="/products/:id/edit"
+                element={<ProductForm mode="edit" />}
+              />
+            </Route>
+            <Route path="/products/:id/stock" element={<StockMovements />} />
+
             <Route path="/challans" element={<Challans />} />
           </Route>
         </Route>
