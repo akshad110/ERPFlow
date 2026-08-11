@@ -1,0 +1,16 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render API deploy
+        run: curl -fsS -X POST "${{ secrets.RENDER_API_DEPLOY_HOOK }}"
+
+      - name: Trigger Render Client deploy
+        run: curl -fsS -X POST "${{ secrets.RENDER_CLIENT_DEPLOY_HOOK }}"
