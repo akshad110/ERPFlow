@@ -29,7 +29,6 @@ CREATE TABLE users (
         ON UPDATE CURRENT_TIMESTAMP
 );
 
-
 -- =========================================
 -- CUSTOMERS
 -- =========================================
@@ -126,6 +125,8 @@ CREATE TABLE products (
     min_stock_alert INT NOT NULL DEFAULT 0,
 
     warehouse_location VARCHAR(150),
+
+    image_url VARCHAR(500) NULL,
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 

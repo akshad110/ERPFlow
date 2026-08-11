@@ -9,6 +9,7 @@ export interface Product {
   currentStock: number;
   minStockAlert: number;
   warehouseLocation: string | null;
+  imageUrl: string | null;
   isLowStock: boolean;
   createdAt: Date;
   updatedAt: Date;

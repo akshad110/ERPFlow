@@ -21,6 +21,10 @@ import {
   StockMovementInput,
   UpdateProductInput,
 } from "../schemas/product.schema.js";
+import {
+  deleteObjectFromS3,
+  uploadProductImageToS3,
+} from "../utils/s3.js";
 
 const emptyToNull = (
   value: string | null | undefined
@@ -173,6 +177,10 @@ export const removeProduct = async (id: string) => {
   try {
     await deleteStockMovementsByProductId(id);
     await deleteProductById(id);
+
+    if (existing.imageUrl) {
+      await deleteObjectFromS3(existing.imageUrl);
+    }
   } catch (error) {
     const code =
       typeof error === "object" && error && "code" in error
@@ -192,6 +200,38 @@ export const removeProduct = async (id: string) => {
   }
 
   return { id };
+};
+
+export const uploadProductImage = async (
+  productId: string,
+  file: {
+    buffer: Buffer;
+    originalname: string;
+    mimetype: string;
+  }
+) => {
+  const product = await findProductById(productId);
+
+  if (!product) {
+    throw new Error("Product not found");
+  }
+
+  const uploaded = await uploadProductImageToS3(file);
+  const previousImageUrl = product.imageUrl;
+
+  await updateProductById(productId, { imageUrl: uploaded.url });
+
+  if (previousImageUrl) {
+    await deleteObjectFromS3(previousImageUrl);
+  }
+
+  const updated = await findProductById(productId);
+
+  if (!updated) {
+    throw new Error("Product not found");
+  }
+
+  return updated;
 };
 
 export const listProductStockMovements = async (productId: string) => {

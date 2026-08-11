@@ -12,9 +12,24 @@ interface ProductRow extends RowDataPacket {
   current_stock: number;
   min_stock_alert: number;
   warehouse_location: string | null;
+  image_url: string | null;
   created_at: Date;
   updated_at: Date;
 }
+
+const PRODUCT_COLUMNS = `
+  id,
+  name,
+  sku,
+  category,
+  unit_price,
+  current_stock,
+  min_stock_alert,
+  warehouse_location,
+  image_url,
+  created_at,
+  updated_at
+`;
 
 export const mapProduct = (row: ProductRow): Product => {
   const currentStock = Number(row.current_stock);
@@ -29,6 +44,7 @@ export const mapProduct = (row: ProductRow): Product => {
     currentStock,
     minStockAlert,
     warehouseLocation: row.warehouse_location,
+    imageUrl: row.image_url,
     isLowStock: currentStock <= minStockAlert,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -75,17 +91,7 @@ export const findProducts = async (filters: {
 
   const [rows] = await pool.execute<ProductRow[]>(
     `
-    SELECT
-      id,
-      name,
-      sku,
-      category,
-      unit_price,
-      current_stock,
-      min_stock_alert,
-      warehouse_location,
-      created_at,
-      updated_at
+    SELECT ${PRODUCT_COLUMNS}
     FROM products
     ${whereSql}
     ORDER BY created_at DESC
@@ -108,17 +114,7 @@ export const findProductById = async (
 
   const [rows] = await db.execute<ProductRow[]>(
     `
-    SELECT
-      id,
-      name,
-      sku,
-      category,
-      unit_price,
-      current_stock,
-      min_stock_alert,
-      warehouse_location,
-      created_at,
-      updated_at
+    SELECT ${PRODUCT_COLUMNS}
     FROM products
     WHERE id = ?
     LIMIT 1
@@ -135,17 +131,7 @@ export const findProductByIdForUpdate = async (
 ): Promise<Product | null> => {
   const [rows] = await connection.execute<ProductRow[]>(
     `
-    SELECT
-      id,
-      name,
-      sku,
-      category,
-      unit_price,
-      current_stock,
-      min_stock_alert,
-      warehouse_location,
-      created_at,
-      updated_at
+    SELECT ${PRODUCT_COLUMNS}
     FROM products
     WHERE id = ?
     LIMIT 1
@@ -162,17 +148,7 @@ export const findProductBySku = async (
 ): Promise<Product | null> => {
   const [rows] = await pool.execute<ProductRow[]>(
     `
-    SELECT
-      id,
-      name,
-      sku,
-      category,
-      unit_price,
-      current_stock,
-      min_stock_alert,
-      warehouse_location,
-      created_at,
-      updated_at
+    SELECT ${PRODUCT_COLUMNS}
     FROM products
     WHERE sku = ?
     LIMIT 1
@@ -229,6 +205,7 @@ export const updateProductById = async (
     unitPrice: number;
     minStockAlert: number;
     warehouseLocation: string | null;
+    imageUrl: string | null;
   }>
 ): Promise<boolean> => {
   const fields: string[] = [];
@@ -257,6 +234,10 @@ export const updateProductById = async (
   if (data.warehouseLocation !== undefined) {
     fields.push("warehouse_location = ?");
     values.push(data.warehouseLocation);
+  }
+  if (data.imageUrl !== undefined) {
+    fields.push("image_url = ?");
+    values.push(data.imageUrl);
   }
 
   if (fields.length === 0) {

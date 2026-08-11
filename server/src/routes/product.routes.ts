@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import {
   createProduct,
   createStockMovement,
@@ -7,11 +7,34 @@ import {
   getProducts,
   getStockMovements,
   patchProduct,
+  uploadImage,
 } from "../controllers/product.controller";
 import { authenticate } from "../middlewares/auth.middleware";
 import { authorizeRoles } from "../middlewares/role.middleware";
+import { uploadProductImage } from "../middlewares/upload.middleware";
 
 const router = Router();
+
+const handleUpload = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  uploadProductImage(req, res, (error: unknown) => {
+    if (!error) {
+      next();
+      return;
+    }
+
+    const message =
+      error instanceof Error ? error.message : "Failed to upload file";
+
+    return res.status(400).json({
+      success: false,
+      message,
+    });
+  });
+};
 
 router.use(authenticate);
 
@@ -23,6 +46,12 @@ router.post(
   "/:id/stock",
   authorizeRoles("ADMIN", "WAREHOUSE"),
   createStockMovement
+);
+router.post(
+  "/:id/image",
+  authorizeRoles("ADMIN", "WAREHOUSE"),
+  handleUpload,
+  uploadImage
 );
 
 router.get("/:id", getProduct);
