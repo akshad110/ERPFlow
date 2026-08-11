@@ -1,0 +1,996 @@
+{
+  "info": {
+    "_postman_id": "c3d6a604-8447-439c-b604-645ba57a01bb",
+    "name": "ERPFlow",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "43042043"
+  },
+  "item": [
+    {
+      "name": "heath check",
+      "item": [
+        {
+          "name": "health check request",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/health",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "health"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Auth Routes",
+      "item": [
+        {
+          "name": "login request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\":\"admin@erpflow.com\",\r\n    \"password\":\"Admin@123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "fetch my data",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0lbj}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/auth/me",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "auth",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Customers Routes",
+      "item": [
+        {
+          "name": "get customers",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0kvd}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/customers",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "customers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get customers by filter",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0kvd}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/customers?search=ABC&status=ACTIVE&page=1&limit=10",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "customers"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "ABC"
+                },
+                {
+                  "key": "status",
+                  "value": "ACTIVE"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create customers",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0kvd}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Test Customer\",\r\n  \"mobile\": \"9999999999\",\r\n  \"email\": \"test@example.com\",\r\n  \"businessName\": \"Test Biz\",\r\n  \"customerType\": \"RETAIL\",\r\n  \"status\": \"LEAD\",\r\n  \"address\": \"Surat\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/customers",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "customers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get customers by id",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0kvd}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/customers/5e20187c-367b-4e97-9913-53e5f2d5019f",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "customers",
+                "5e20187c-367b-4e97-9913-53e5f2d5019f"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "patch customer request",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0kvd}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Rahul Sharma Updated\",\r\n  \"status\": \"ACTIVE\",\r\n  \"notes\": \"Updated from Postman\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/customers/5e20187c-367b-4e97-9913-53e5f2d5019f",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "customers",
+                "5e20187c-367b-4e97-9913-53e5f2d5019f"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "New Request",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0kvd}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"note\": \"Called regarding bulk order\",\r\n  \"followUpDate\": \"2026-08-20\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/customers/5e20187c-367b-4e97-9913-53e5f2d5019f/follow-ups",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "customers",
+                "5e20187c-367b-4e97-9913-53e5f2d5019f",
+                "follow-ups"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get customers follow-ups",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_0kvd}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"note\": \"Called regarding bulk order\",\r\n  \"followUpDate\": \"2026-08-20\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/customers/5e20187c-367b-4e97-9913-53e5f2d5019f/follow-ups",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "customers",
+                "5e20187c-367b-4e97-9913-53e5f2d5019f",
+                "follow-ups"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Product Routes",
+      "item": [
+        {
+          "name": "get products",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_168l}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/products",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get products by id",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_168l}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "type": "text",
+                  "value": "iPhone 15"
+                },
+                {
+                  "key": "description",
+                  "type": "text",
+                  "value": "Latest Apple smartphone"
+                },
+                {
+                  "key": "price",
+                  "type": "text",
+                  "value": "79999"
+                },
+                {
+                  "key": "category",
+                  "type": "text",
+                  "value": "Electronics"
+                },
+                {
+                  "key": "stock",
+                  "type": "text",
+                  "value": "10"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": "/C:/Users/Akshad/Downloads/profile_pic.webp"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/products/96e41485-4cc9-4131-bedc-4f6ca0defe33",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "products",
+                "96e41485-4cc9-4131-bedc-4f6ca0defe33"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get products by filter",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_168l}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "type": "text",
+                  "value": "iPhone 15"
+                },
+                {
+                  "key": "description",
+                  "type": "text",
+                  "value": "Latest Apple smartphone"
+                },
+                {
+                  "key": "price",
+                  "type": "text",
+                  "value": "79999"
+                },
+                {
+                  "key": "category",
+                  "type": "text",
+                  "value": "Electronics"
+                },
+                {
+                  "key": "stock",
+                  "type": "text",
+                  "value": "10"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": "/C:/Users/Akshad/Downloads/profile_pic.webp"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/products?search=Mouse&lowStock=true",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "Mouse",
+                  "type": "text"
+                },
+                {
+                  "key": "lowStock",
+                  "value": "true",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create product",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_168l}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"HDMI Cable\",\r\n  \"sku\": \"HDMI001\",\r\n  \"category\": \"Accessories\",\r\n  \"unitPrice\": 399,\r\n  \"currentStock\": 25,\r\n  \"minStockAlert\": 5,\r\n  \"warehouseLocation\": \"C-01\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/products",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update product",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_168l}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\":\"wireless mouse\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/products/96e41485-4cc9-4131-bedc-4f6ca0defe33",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "products",
+                "96e41485-4cc9-4131-bedc-4f6ca0defe33"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create stock movements",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_168l}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"quantity\": 10,\r\n  \"movementType\": \"OUT\",\r\n  \"reason\": \"New purchase\"\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/products/96e41485-4cc9-4131-bedc-4f6ca0defe33/stock",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "products",
+                "96e41485-4cc9-4131-bedc-4f6ca0defe33",
+                "stock"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get stock movements",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_168l}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/products/96e41485-4cc9-4131-bedc-4f6ca0defe33/stock-movements",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "products",
+                "96e41485-4cc9-4131-bedc-4f6ca0defe33",
+                "stock-movements"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "product img",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_168l}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "uuid": "4b69c811-fa3f-4d6a-8b50-0137eaa84de4",
+                  "src": "/C:/Users/Akshad/OneDrive/Pictures/Screenshots/Screenshot 2025-05-15 154303.png"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/products/96e41485-4cc9-4131-bedc-4f6ca0defe33/image",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "products",
+                "96e41485-4cc9-4131-bedc-4f6ca0defe33",
+                "image"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Challan routes",
+      "item": [
+        {
+          "name": "create challans",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_168l}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"customerId\": \"5e20187c-367b-4e97-9913-53e5f2d5019f\",\r\n  \"status\": \"DRAFT\",\r\n  \"items\": [\r\n    { \"productId\": \"96e41485-4cc9-4131-bedc-4f6ca0defe33\", \"quantity\": 2 }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/challans",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "challans"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel challan",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_168l}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"customerId\": \"5e20187c-367b-4e97-9913-53e5f2d5019f\",\r\n  \"status\": \"DRAFT\",\r\n  \"items\": [\r\n    { \"productId\": \"96e41485-4cc9-4131-bedc-4f6ca0defe33\", \"quantity\": 2 }\r\n  ]\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/challans/e746709c-c744-402a-91b7-77ca2c7e5d72/cancel",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "challans",
+                "e746709c-c744-402a-91b7-77ca2c7e5d72",
+                "cancel"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "confirm challan",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_168l}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"customerId\": \"5e20187c-367b-4e97-9913-53e5f2d5019f\",\r\n  \"status\": \"DRAFT\",\r\n  \"items\": [\r\n    { \"productId\": \"96e41485-4cc9-4131-bedc-4f6ca0defe33\", \"quantity\": 2 }\r\n  ]\r\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/challans/e746709c-c744-402a-91b7-77ca2c7e5d72/confirm",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "challans",
+                "e746709c-c744-402a-91b7-77ca2c7e5d72",
+                "confirm"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Dashboard Routes",
+      "item": [
+        {
+          "name": "Dashboard stats",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_168l}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/dashboard/stats",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "dashboard",
+                "stats"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "auth_secret_0lbj",
+      "secret": true
+    },
+    {
+      "key": "auth_secret_0kvd",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0kvd",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_168l",
+      "secret": true
+    },
+    {
+      "key": "auth_secret_168l",
+      "secret": true
+    }
+  ]
+}
