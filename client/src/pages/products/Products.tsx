@@ -141,7 +141,7 @@ export default function Products() {
           canManage ? (
             <Link
               to="/products/new"
-              className="inline-flex h-9 items-center gap-2 rounded-xl bg-teal-700 px-3.5 text-sm font-medium text-white shadow-sm hover:bg-teal-800"
+              className="inline-flex h-9 items-center gap-2 rounded-xl bg-erp-dark px-3.5 text-sm font-medium text-white shadow-sm hover:bg-erp-dark/90"
             >
               <Plus className="size-4" />
               New product
@@ -191,7 +191,7 @@ export default function Products() {
               <Button
                 type="button"
                 variant="outline"
-                className="rounded-xl border-slate-200 bg-white"
+                className="rounded-xl border-[#b7d9cb] bg-[#f4fbf7]"
                 onClick={clearFilters}
               >
                 Clear filters
@@ -199,7 +199,7 @@ export default function Products() {
             ) : canManage ? (
               <Link
                 to="/products/new"
-                className="inline-flex h-9 items-center rounded-xl bg-teal-700 px-3 text-sm text-white hover:bg-teal-800"
+                className="inline-flex h-9 items-center rounded-xl bg-erp-dark px-3 text-sm text-white hover:bg-erp-dark/90"
               >
                 New product
               </Link>
@@ -228,14 +228,14 @@ export default function Products() {
                     value={searchInput}
                     onChange={(e) => setSearchInput(e.target.value)}
                     placeholder="Search name, SKU or category..."
-                    className="h-9 rounded-xl border-slate-200 bg-slate-50 pl-9"
+                    className="h-9 rounded-xl border-[#b7d9cb] bg-[#eaf7f1] pl-9"
                   />
                 </div>
                 <Input
                   value={category}
                   onChange={(e) => updateParam("category", e.target.value)}
                   placeholder="Category"
-                  className="h-9 min-w-36 rounded-xl border-slate-200 bg-slate-50"
+                  className="h-9 min-w-36 rounded-xl border-[#b7d9cb] bg-[#eaf7f1]"
                 />
                 <NativeSelect
                   value={lowStockParam}
@@ -260,7 +260,7 @@ export default function Products() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    className="rounded-xl border-slate-200 bg-white"
+                    className="rounded-xl border-[#b7d9cb] bg-[#f4fbf7]"
                     disabled={pagination.page <= 1 || isRefetching}
                     onClick={() =>
                       updateParam("page", String(pagination.page - 1))
@@ -272,7 +272,7 @@ export default function Products() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    className="rounded-xl border-slate-200 bg-white"
+                    className="rounded-xl border-[#b7d9cb] bg-[#f4fbf7]"
                     disabled={
                       pagination.page >= pagination.totalPages || isRefetching
                     }
@@ -306,7 +306,7 @@ export default function Products() {
                 {products.map((product) => (
                   <tr
                     key={product.id}
-                    className="border-b border-slate-50 transition-colors last:border-0 hover:bg-slate-50/80"
+                    className="border-b border-slate-50 transition-colors last:border-0 hover:bg-[#eaf7f1]/80"
                   >
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
@@ -317,7 +317,7 @@ export default function Products() {
                         <div className="min-w-0">
                           <Link
                             to={`/products/${product.id}/stock`}
-                            className="font-semibold text-slate-800 hover:text-teal-700"
+                            className="font-semibold text-slate-800 hover:text-erp-dark"
                           >
                             {product.name}
                           </Link>
@@ -333,7 +333,7 @@ export default function Products() {
                     <td className="px-4 py-3 text-slate-600">
                       {product.category}
                     </td>
-                    <td className="px-4 py-3 tabular-nums text-slate-700">
+                    <td className="px-4 py-3 tabular-nums text-[#2d4f47]">
                       {formatMoney(product.unitPrice)}
                     </td>
                     <td className="px-4 py-3">
@@ -343,7 +343,7 @@ export default function Products() {
                             product.isLowStock ? "bg-amber-500" : "bg-emerald-500"
                           }`}
                         />
-                        <span className="tabular-nums text-slate-700">
+                        <span className="tabular-nums text-[#2d4f47]">
                           {product.currentStock}
                         </span>
                       </div>

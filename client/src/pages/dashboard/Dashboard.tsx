@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
+  ArrowUpRight,
   ClipboardList,
   Package,
   Plus,
@@ -36,7 +37,7 @@ function formatDate(value: string) {
 }
 
 export default function Dashboard() {
-  const { user, hasRole } = useAuth();
+  const { hasRole } = useAuth();
   const canManageChallans = hasRole("ADMIN", "SALES");
   const canManageStock = hasRole("ADMIN", "WAREHOUSE");
 
@@ -96,7 +97,7 @@ export default function Dashboard() {
   return (
     <div>
       <PageHeader
-        title={`Hello, ${user?.name?.split(" ")[0] ?? "there"}`}
+        title="Operations overview"
         description={
           canManageChallans
             ? "Track customers, stock and challan activity."
@@ -110,7 +111,7 @@ export default function Dashboard() {
             {canManageChallans ? (
               <Link
                 to="/challans/new"
-                className="inline-flex h-8 items-center gap-2 rounded-xl bg-teal-700 px-3 text-sm font-medium text-white hover:bg-teal-800"
+                className="inline-flex h-8 items-center gap-2 rounded-xl bg-erp-dark px-3 text-sm font-medium text-white hover:bg-erp-dark/90"
               >
                 <Plus className="size-3.5" />
                 New challan
@@ -119,7 +120,7 @@ export default function Dashboard() {
             {canManageStock && (stats?.lowStockCount ?? 0) > 0 ? (
               <Link
                 to="/products?lowStock=true"
-                className="inline-flex h-8 items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 text-sm font-medium text-amber-800 hover:bg-amber-100"
+                className="inline-flex h-8 items-center gap-2 rounded-xl border border-amber-300/80 bg-amber-50 px-3 text-sm font-medium text-amber-800 hover:bg-amber-100"
               >
                 <TriangleAlert className="size-3.5" />
                 Low stock
@@ -129,7 +130,7 @@ export default function Dashboard() {
               type="button"
               variant="outline"
               size="sm"
-              className="border-slate-200 bg-white rounded-xl"
+              className="rounded-xl border-[#b7d9cb] bg-[#f4fbf7]"
               onClick={() => statsQuery.refetch()}
               disabled={statsQuery.isFetching}
             >
@@ -169,60 +170,89 @@ export default function Dashboard() {
 
       {stats ? (
         <>
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {cards.map((card) => {
-              const Icon = card.icon;
-              return (
-                <Link
-                  key={card.label}
-                  to={card.to}
-                  className={cn(
-                    "rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-colors",
-                    card.warn
-                      ? "border-amber-200 hover:border-amber-300 hover:bg-amber-50/40"
-                      : card.emphasize
-                        ? "border-teal-200 hover:border-teal-300 hover:bg-teal-50/40"
-                        : "border-slate-200/80 hover:border-teal-200 hover:bg-teal-50/30"
-                  )}
-                >
-                  <div className="flex items-start justify-between gap-3">
+          <div className="surface-panel overflow-hidden rounded-2xl">
+            <div className="flex items-center justify-between border-b border-[#b7d9cb]/70 bg-[#eaf7f1]/60 px-4 py-2.5">
+              <p className="text-[11px] font-semibold tracking-[0.14em] text-[#5b8a7c] uppercase">
+                Live snapshot
+              </p>
+              <p className="text-[11px] text-[#6a9a8a]">Tap any metric to open</p>
+            </div>
+            <div className="grid sm:grid-cols-2 xl:grid-cols-4">
+              {cards.map((card, index) => {
+                const Icon = card.icon;
+                return (
+                  <Link
+                    key={card.label}
+                    to={card.to}
+                    className={cn(
+                      "group relative flex min-h-[148px] flex-col justify-between gap-5 p-5 transition-colors",
+                      "hover:bg-[#dff5ea]/70",
+                      index > 0 && "border-t border-[#b7d9cb]/55 sm:border-t-0",
+                      index % 2 === 1 && "sm:border-l sm:border-[#b7d9cb]/55",
+                      index > 1 && "xl:border-t-0",
+                      index > 0 && "xl:border-l xl:border-[#b7d9cb]/55",
+                      card.warn && "bg-gradient-to-br from-amber-50/90 to-transparent"
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        "absolute inset-y-4 left-0 w-0.5 rounded-full opacity-0 transition-opacity group-hover:opacity-100",
+                        card.warn ? "bg-amber-500" : "bg-[#6fcf97]"
+                      )}
+                    />
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-2.5">
+                        <span
+                          className={cn(
+                            "inline-flex size-9 items-center justify-center rounded-xl",
+                            card.warn
+                              ? "bg-amber-100 text-amber-700"
+                              : "bg-[#d8f3e4] text-[#1f6f5f]"
+                          )}
+                        >
+                          <Icon className="size-4" />
+                        </span>
+                        <div>
+                          <p className="text-sm font-medium text-erp-ink">
+                            {card.label}
+                          </p>
+                          <p className="text-[11px] text-[#6a9a8a]">
+                            0{index + 1} / 04
+                          </p>
+                        </div>
+                      </div>
+                      <ArrowUpRight className="size-4 text-[#9bb8ad] transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#1f6f5f]" />
+                    </div>
                     <div>
-                      <p className="text-sm text-slate-500">{card.label}</p>
                       <p
-                        className={`mt-2 text-2xl font-semibold tabular-nums ${
-                          card.warn ? "text-amber-700" : "text-slate-900"
-                        }`}
+                        className={cn(
+                          "text-3xl font-semibold tracking-tight tabular-nums",
+                          card.warn ? "text-amber-700" : "text-erp-ink"
+                        )}
                       >
                         {card.value ?? 0}
                       </p>
-                      <p className="mt-1 text-xs text-slate-400">{card.hint}</p>
+                      <p className="mt-1.5 max-w-[16rem] text-xs leading-relaxed text-[#5b736c]">
+                        {card.hint}
+                      </p>
                     </div>
-                    <div
-                      className={`rounded-lg p-2 ${
-                        card.warn
-                          ? "bg-amber-50 text-amber-700"
-                          : "bg-teal-50 text-teal-700"
-                      }`}
-                    >
-                      <Icon className="size-4" />
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
+                  </Link>
+                );
+              })}
+            </div>
           </div>
 
-          <div className="mt-6 overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
-            <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3.5">
+          <div className="surface-panel mt-6 overflow-hidden rounded-2xl">
+            <div className="flex items-center justify-between border-b border-[#b7d9cb]/70 bg-[#eaf7f1]/70 px-4 py-3.5">
               <div>
-                <h2 className="text-sm font-semibold text-slate-800">
+                <h2 className="text-sm font-semibold text-erp-ink">
                   Recent challans
                 </h2>
-                <p className="text-xs text-slate-400">{recentHint}</p>
+                <p className="text-xs text-[#45685f]">{recentHint}</p>
               </div>
               <Link
                 to="/challans"
-                className="text-xs font-medium text-teal-700 hover:underline"
+                className="text-xs font-medium text-erp-dark hover:underline"
               >
                 View all
               </Link>
@@ -241,7 +271,7 @@ export default function Dashboard() {
                     canManageChallans ? (
                       <Link
                         to="/challans/new"
-                        className="inline-flex h-9 items-center gap-2 rounded-md bg-teal-700 px-3 text-sm text-white hover:bg-teal-800"
+                        className="inline-flex h-9 items-center gap-2 rounded-xl bg-erp-dark px-3 text-sm text-white hover:bg-erp-dark/90"
                       >
                         <Plus className="size-4" />
                         New challan
@@ -251,9 +281,9 @@ export default function Dashboard() {
                 />
               </div>
             ) : (
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto bg-[#f7fcf9]/80">
                 <table className="min-w-full text-left text-sm">
-                  <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+                  <thead className="bg-[#eaf7f1] text-xs uppercase tracking-wide text-[#45685f]">
                     <tr>
                       <th className="px-4 py-3 font-medium">Challan</th>
                       <th className="px-4 py-3 font-medium">Customer</th>
@@ -266,12 +296,12 @@ export default function Dashboard() {
                     {stats.recentChallans.map((challan) => (
                       <tr
                         key={challan.id}
-                        className="border-t border-slate-100 hover:bg-slate-50/80"
+                        className="border-t border-[#b7d9cb]/50 hover:bg-[#eaf7f1]/70"
                       >
-                        <td className="px-4 py-3 font-medium text-slate-800">
+                        <td className="px-4 py-3 font-medium text-erp-ink">
                           <Link
                             to={`/challans/${challan.id}`}
-                            className="hover:text-teal-700"
+                            className="hover:text-erp-dark"
                           >
                             {challan.challanNumber}
                           </Link>

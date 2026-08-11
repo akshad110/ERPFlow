@@ -129,7 +129,7 @@ export default function StockMovements() {
           actions={
             <Link
               to="/products"
-              className="inline-flex h-8 items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-700 hover:bg-slate-50"
+              className="inline-flex h-8 items-center gap-2 rounded-md border border-[#b7d9cb] bg-[#f4fbf7] px-3 text-sm text-[#2d4f47] hover:bg-[#eaf7f1]"
             >
               <ArrowLeft className="size-3.5" />
               Back
@@ -145,7 +145,7 @@ export default function StockMovements() {
           action={
             <Link
               to="/products"
-              className="inline-flex h-9 items-center rounded-md bg-teal-700 px-3 text-sm text-white hover:bg-teal-800"
+              className="inline-flex h-9 items-center rounded-md bg-erp-dark px-3 text-sm text-white hover:bg-erp-dark/90"
             >
               Back to products
             </Link>
@@ -167,7 +167,7 @@ export default function StockMovements() {
           <div className="flex flex-wrap gap-2">
             <Link
               to="/products"
-              className="inline-flex h-8 items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-700 hover:bg-slate-50"
+              className="inline-flex h-8 items-center gap-2 rounded-md border border-[#b7d9cb] bg-[#f4fbf7] px-3 text-sm text-[#2d4f47] hover:bg-[#eaf7f1]"
             >
               <ArrowLeft className="size-3.5" />
               Back
@@ -175,7 +175,7 @@ export default function StockMovements() {
             {canManage ? (
               <Link
                 to={`/products/${product.id}/edit`}
-                className="inline-flex h-8 items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-700 hover:bg-slate-50"
+                className="inline-flex h-8 items-center gap-2 rounded-md border border-[#b7d9cb] bg-[#f4fbf7] px-3 text-sm text-[#2d4f47] hover:bg-[#eaf7f1]"
               >
                 <Pencil className="size-3.5" />
                 Edit
@@ -187,9 +187,9 @@ export default function StockMovements() {
 
       <div className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
         <section className="space-y-4">
-          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="surface-panel rounded-2xl p-5">
             <div className="flex flex-col gap-4 sm:flex-row">
-              <div className="flex size-28 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
+              <div className="flex size-28 items-center justify-center overflow-hidden rounded-xl border border-[#b7d9cb] bg-[#eaf7f1]">
                 {product.imageUrl ? (
                   <img
                     src={product.imageUrl}
@@ -237,7 +237,7 @@ export default function StockMovements() {
                       type="button"
                       variant="outline"
                       size="sm"
-                      className="border-slate-200 bg-white"
+                      className="border-[#b7d9cb] bg-[#f4fbf7]"
                       disabled={imageMutation.isPending}
                       onClick={() => fileInputRef.current?.click()}
                     >
@@ -252,7 +252,7 @@ export default function StockMovements() {
 
           {canManage ? (
             <form
-              className="space-y-3 rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
+              className="space-y-3 surface-panel rounded-2xl p-5"
               onSubmit={handleSubmit((values) => stockMutation.mutate(values))}
               noValidate
             >
@@ -278,7 +278,7 @@ export default function StockMovements() {
                   <Input
                     type="number"
                     min="1"
-                    className="bg-white"
+                    className="bg-[#f7fcf9]"
                     {...register("quantity", { valueAsNumber: true })}
                   />
                   {errors.quantity ? (
@@ -292,7 +292,7 @@ export default function StockMovements() {
               <div className="space-y-1.5">
                 <Label>Reason</Label>
                 <Input
-                  className="bg-white"
+                  className="bg-[#f7fcf9]"
                   placeholder="New purchase / Damaged / Correction"
                   {...register("reason")}
                 />
@@ -303,7 +303,7 @@ export default function StockMovements() {
 
               <Button
                 type="submit"
-                className="bg-teal-700 text-white hover:bg-teal-800"
+                className="bg-erp-dark text-white hover:bg-erp-dark/90"
                 disabled={stockMutation.isPending}
               >
                 {stockMutation.isPending ? "Updating..." : "Update stock"}
@@ -312,7 +312,7 @@ export default function StockMovements() {
           ) : null}
         </section>
 
-        <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+        <section className="surface-panel rounded-2xl p-5">
           <h2 className="text-sm font-semibold text-slate-800">
             Stock movement log
           </h2>
@@ -362,7 +362,7 @@ export default function StockMovements() {
               ? movements.map((movement) => (
                   <article
                     key={movement.id}
-                    className="rounded-lg border border-slate-200 bg-slate-50/70 px-3 py-3"
+                    className="rounded-lg border border-[#b7d9cb] bg-[#eaf7f1]/70 px-3 py-3"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div>
@@ -379,7 +379,7 @@ export default function StockMovements() {
                             {movement.quantity}
                           </span>
                         </div>
-                        <p className="mt-1 text-sm text-slate-700">
+                        <p className="mt-1 text-sm text-[#2d4f47]">
                           {movement.reason}
                         </p>
                       </div>

@@ -129,7 +129,7 @@ export default function CustomerDetails() {
           <div className="flex flex-wrap gap-2">
             <Link
               to="/customers"
-              className="inline-flex h-8 items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-700 hover:bg-slate-50"
+              className="inline-flex h-8 items-center gap-2 rounded-md border border-[#b7d9cb] bg-[#f4fbf7] px-3 text-sm text-[#2d4f47] hover:bg-[#eaf7f1]"
             >
               <ArrowLeft className="size-3.5" />
               Back
@@ -138,7 +138,7 @@ export default function CustomerDetails() {
               <>
                 <Link
                   to={`/customers/${customer.id}/edit`}
-                  className="inline-flex h-8 items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-700 hover:bg-slate-50"
+                  className="inline-flex h-8 items-center gap-2 rounded-md border border-[#b7d9cb] bg-[#f4fbf7] px-3 text-sm text-[#2d4f47] hover:bg-[#eaf7f1]"
                 >
                   <Pencil className="size-3.5" />
                   Edit
@@ -166,7 +166,7 @@ export default function CustomerDetails() {
       />
 
       <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-        <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+        <section className="surface-panel rounded-2xl p-5">
           <div className="mb-4 flex flex-wrap items-center gap-2">
             <StatusBadge
               label={customer.status}
@@ -203,14 +203,14 @@ export default function CustomerDetails() {
               <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
                 GST
               </p>
-              <p className="mt-1 text-slate-700">{customer.gstNumber || "—"}</p>
+              <p className="mt-1 text-[#2d4f47]">{customer.gstNumber || "—"}</p>
             </div>
             <div>
               <p className="mb-1 flex items-center gap-1 text-xs font-medium uppercase tracking-wide text-slate-400">
                 <MapPin className="size-3.5" />
                 Address
               </p>
-              <p className="text-slate-700 whitespace-pre-wrap">
+              <p className="text-[#2d4f47] whitespace-pre-wrap">
                 {customer.address || "—"}
               </p>
             </div>
@@ -218,14 +218,14 @@ export default function CustomerDetails() {
               <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
                 Notes
               </p>
-              <p className="mt-1 text-slate-700 whitespace-pre-wrap">
+              <p className="mt-1 text-[#2d4f47] whitespace-pre-wrap">
                 {customer.notes || "—"}
               </p>
             </div>
           </div>
         </section>
 
-        <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+        <section className="surface-panel rounded-2xl p-5">
           <h2 className="text-sm font-semibold text-slate-800">Follow-up history</h2>
           <p className="mt-1 text-xs text-slate-500">
             Keep a running CRM log for this customer.
@@ -233,7 +233,7 @@ export default function CustomerDetails() {
 
           {canManage ? (
             <form
-              className="mt-4 space-y-3 rounded-lg border border-slate-200 bg-slate-50 p-3"
+              className="mt-4 space-y-3 rounded-lg border border-[#b7d9cb] bg-[#eaf7f1] p-3"
               onSubmit={handleSubmit((values) => followUpMutation.mutate(values))}
               noValidate
             >
@@ -241,7 +241,7 @@ export default function CustomerDetails() {
                 <Label htmlFor="note">Note</Label>
                 <Textarea
                   id="note"
-                  className="min-h-20 bg-white"
+                  className="min-h-20 bg-[#f7fcf9]"
                   placeholder="Called regarding bulk order..."
                   {...register("note")}
                 />
@@ -254,7 +254,7 @@ export default function CustomerDetails() {
                 <Input
                   id="followUpDate"
                   type="date"
-                  className="bg-white"
+                  className="bg-[#f7fcf9]"
                   {...register("followUpDate")}
                 />
                 {errors.followUpDate ? (
@@ -266,7 +266,7 @@ export default function CustomerDetails() {
               <Button
                 type="submit"
                 size="sm"
-                className="bg-teal-700 text-white hover:bg-teal-800"
+                className="bg-erp-dark text-white hover:bg-erp-dark/90"
                 disabled={followUpMutation.isPending}
               >
                 {followUpMutation.isPending ? "Saving..." : "Add follow-up"}
@@ -294,7 +294,7 @@ export default function CustomerDetails() {
             {followUps.map((item) => (
               <article
                 key={item.id}
-                className="rounded-lg border border-slate-200 bg-slate-50/70 px-3 py-3"
+                className="rounded-lg border border-[#b7d9cb] bg-[#eaf7f1]/70 px-3 py-3"
               >
                 <div className="flex items-start justify-between gap-3">
                   <p className="text-sm text-slate-800 whitespace-pre-wrap">

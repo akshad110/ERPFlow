@@ -125,7 +125,7 @@ export default function ProductForm({ mode }: ProductFormProps) {
         actions={
           <Link
             to={backTo}
-            className="inline-flex h-8 items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-700 hover:bg-slate-50"
+            className="inline-flex h-8 items-center gap-2 rounded-md border border-[#b7d9cb] bg-[#f4fbf7] px-3 text-sm text-[#2d4f47] hover:bg-[#eaf7f1]"
           >
             <ArrowLeft className="size-3.5" />
             Back
@@ -134,27 +134,27 @@ export default function ProductForm({ mode }: ProductFormProps) {
       />
 
       <form
-        className="max-w-3xl space-y-5 rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6"
+        className="max-w-3xl space-y-5 surface-panel rounded-2xl p-5 sm:p-6"
         noValidate
         onSubmit={onSubmit}
       >
         {isEdit ? (
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Product name" error={editForm.formState.errors.name?.message}>
-              <Input className="bg-white" {...editForm.register("name")} />
+              <Input className="bg-[#f7fcf9]" {...editForm.register("name")} />
             </Field>
             <Field label="SKU" error={editForm.formState.errors.sku?.message}>
-              <Input className="bg-white" {...editForm.register("sku")} />
+              <Input className="bg-[#f7fcf9]" {...editForm.register("sku")} />
             </Field>
             <Field label="Category" error={editForm.formState.errors.category?.message}>
-              <Input className="bg-white" {...editForm.register("category")} />
+              <Input className="bg-[#f7fcf9]" {...editForm.register("category")} />
             </Field>
             <Field label="Unit price" error={editForm.formState.errors.unitPrice?.message}>
               <Input
                 type="number"
                 step="0.01"
                 min="0"
-                className="bg-white"
+                className="bg-[#f7fcf9]"
                 {...editForm.register("unitPrice", { valueAsNumber: true })}
               />
             </Field>
@@ -165,7 +165,7 @@ export default function ProductForm({ mode }: ProductFormProps) {
               <Input
                 type="number"
                 min="0"
-                className="bg-white"
+                className="bg-[#f7fcf9]"
                 {...editForm.register("minStockAlert", { valueAsNumber: true })}
               />
             </Field>
@@ -174,7 +174,7 @@ export default function ProductForm({ mode }: ProductFormProps) {
               error={editForm.formState.errors.warehouseLocation?.message}
             >
               <Input
-                className="bg-white"
+                className="bg-[#f7fcf9]"
                 {...editForm.register("warehouseLocation")}
               />
             </Field>
@@ -182,20 +182,20 @@ export default function ProductForm({ mode }: ProductFormProps) {
         ) : (
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Product name" error={createForm.formState.errors.name?.message}>
-              <Input className="bg-white" {...createForm.register("name")} />
+              <Input className="bg-[#f7fcf9]" {...createForm.register("name")} />
             </Field>
             <Field label="SKU" error={createForm.formState.errors.sku?.message}>
-              <Input className="bg-white" {...createForm.register("sku")} />
+              <Input className="bg-[#f7fcf9]" {...createForm.register("sku")} />
             </Field>
             <Field label="Category" error={createForm.formState.errors.category?.message}>
-              <Input className="bg-white" {...createForm.register("category")} />
+              <Input className="bg-[#f7fcf9]" {...createForm.register("category")} />
             </Field>
             <Field label="Unit price" error={createForm.formState.errors.unitPrice?.message}>
               <Input
                 type="number"
                 step="0.01"
                 min="0"
-                className="bg-white"
+                className="bg-[#f7fcf9]"
                 {...createForm.register("unitPrice", { valueAsNumber: true })}
               />
             </Field>
@@ -206,7 +206,7 @@ export default function ProductForm({ mode }: ProductFormProps) {
               <Input
                 type="number"
                 min="0"
-                className="bg-white"
+                className="bg-[#f7fcf9]"
                 {...createForm.register("currentStock", { valueAsNumber: true })}
               />
             </Field>
@@ -217,7 +217,7 @@ export default function ProductForm({ mode }: ProductFormProps) {
               <Input
                 type="number"
                 min="0"
-                className="bg-white"
+                className="bg-[#f7fcf9]"
                 {...createForm.register("minStockAlert", { valueAsNumber: true })}
               />
             </Field>
@@ -226,7 +226,7 @@ export default function ProductForm({ mode }: ProductFormProps) {
               error={createForm.formState.errors.warehouseLocation?.message}
             >
               <Input
-                className="bg-white"
+                className="bg-[#f7fcf9]"
                 {...createForm.register("warehouseLocation")}
               />
             </Field>
@@ -236,7 +236,7 @@ export default function ProductForm({ mode }: ProductFormProps) {
         <div className="flex flex-wrap gap-2 border-t border-slate-100 pt-4">
           <Button
             type="submit"
-            className="bg-teal-700 text-white hover:bg-teal-800"
+            className="bg-erp-dark text-white hover:bg-erp-dark/90"
             disabled={saveMutation.isPending}
           >
             {saveMutation.isPending
@@ -248,7 +248,7 @@ export default function ProductForm({ mode }: ProductFormProps) {
           <Button
             type="button"
             variant="outline"
-            className="border-slate-200 bg-white"
+            className="border-[#b7d9cb] bg-[#f4fbf7]"
             onClick={() => navigate(backTo)}
           >
             Cancel

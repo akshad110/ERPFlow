@@ -1,12 +1,12 @@
 import { cn } from "@/lib/utils";
 
 const palettes = [
-  "bg-teal-100 text-teal-800",
-  "bg-sky-100 text-sky-800",
-  "bg-violet-100 text-violet-800",
-  "bg-amber-100 text-amber-800",
-  "bg-rose-100 text-rose-800",
-  "bg-emerald-100 text-emerald-800",
+  "bg-erp-light/35 text-erp-dark",
+  "bg-[#d8f3e4] text-erp-dark",
+  "bg-erp/20 text-erp-dark",
+  "bg-[#e4f6ec] text-[#1f6f5f]",
+  "bg-[#cfe3da] text-erp-dark",
+  "bg-erp-soft text-erp-dark",
 ] as const;
 
 function initials(name: string) {

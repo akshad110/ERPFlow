@@ -123,7 +123,7 @@ export default function CustomerForm({ mode }: CustomerFormProps) {
         actions={
           <Link
             to={backTo}
-            className="inline-flex h-8 items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-700 hover:bg-slate-50"
+            className="inline-flex h-8 items-center gap-2 rounded-md border border-[#b7d9cb] bg-[#f4fbf7] px-3 text-sm text-[#2d4f47] hover:bg-[#eaf7f1]"
           >
             <ArrowLeft className="size-3.5" />
             Back
@@ -133,27 +133,27 @@ export default function CustomerForm({ mode }: CustomerFormProps) {
 
       <form
         onSubmit={onSubmit}
-        className="max-w-3xl space-y-5 rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6"
+        className="max-w-3xl space-y-5 surface-panel rounded-2xl p-5 sm:p-6"
         noValidate
       >
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Customer name" error={errors.name?.message}>
-            <Input className="bg-white" {...register("name")} />
+            <Input className="bg-[#f7fcf9]" {...register("name")} />
           </Field>
           <Field label="Mobile" error={errors.mobile?.message}>
-            <Input className="bg-white" {...register("mobile")} />
+            <Input className="bg-[#f7fcf9]" {...register("mobile")} />
           </Field>
           <Field label="Email" error={errors.email?.message}>
-            <Input type="email" className="bg-white" {...register("email")} />
+            <Input type="email" className="bg-[#f7fcf9]" {...register("email")} />
           </Field>
           <Field label="Business name" error={errors.businessName?.message}>
-            <Input className="bg-white" {...register("businessName")} />
+            <Input className="bg-[#f7fcf9]" {...register("businessName")} />
           </Field>
           <Field label="GST number" error={errors.gstNumber?.message}>
-            <Input className="bg-white" {...register("gstNumber")} />
+            <Input className="bg-[#f7fcf9]" {...register("gstNumber")} />
           </Field>
           <Field label="Follow-up date" error={errors.followUpDate?.message}>
-            <Input type="date" className="bg-white" {...register("followUpDate")} />
+            <Input type="date" className="bg-[#f7fcf9]" {...register("followUpDate")} />
           </Field>
           <Field label="Customer type" error={errors.customerType?.message}>
             <NativeSelect {...register("customerType")}>
@@ -172,17 +172,17 @@ export default function CustomerForm({ mode }: CustomerFormProps) {
         </div>
 
         <Field label="Address" error={errors.address?.message}>
-          <Textarea className="min-h-20 bg-white" {...register("address")} />
+          <Textarea className="min-h-20 bg-[#f7fcf9]" {...register("address")} />
         </Field>
 
         <Field label="Notes" error={errors.notes?.message}>
-          <Textarea className="min-h-24 bg-white" {...register("notes")} />
+          <Textarea className="min-h-24 bg-[#f7fcf9]" {...register("notes")} />
         </Field>
 
         <div className="flex flex-wrap items-center gap-2 border-t border-slate-100 pt-4">
           <Button
             type="submit"
-            className="bg-teal-700 text-white hover:bg-teal-800"
+            className="bg-erp-dark text-white hover:bg-erp-dark/90"
             disabled={saveMutation.isPending || (isEdit && !isDirty)}
           >
             {saveMutation.isPending
@@ -194,7 +194,7 @@ export default function CustomerForm({ mode }: CustomerFormProps) {
           <Button
             type="button"
             variant="outline"
-            className="border-slate-200 bg-white"
+            className="border-[#b7d9cb] bg-[#f4fbf7]"
             onClick={() => navigate(backTo)}
           >
             Cancel

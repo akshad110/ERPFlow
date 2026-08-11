@@ -129,7 +129,7 @@ export default function Customers() {
           canManage ? (
             <Link
               to="/customers/new"
-              className="inline-flex h-9 items-center gap-2 rounded-xl bg-teal-700 px-3.5 text-sm font-medium text-white shadow-sm hover:bg-teal-800"
+              className="inline-flex h-9 items-center gap-2 rounded-xl bg-erp-dark px-3.5 text-sm font-medium text-white shadow-sm hover:bg-erp-dark/90"
             >
               <Plus className="size-4" />
               New customer
@@ -178,7 +178,7 @@ export default function Customers() {
               <Button
                 type="button"
                 variant="outline"
-                className="rounded-xl border-slate-200 bg-white"
+                className="rounded-xl border-[#b7d9cb] bg-[#f4fbf7]"
                 onClick={clearFilters}
               >
                 Clear filters
@@ -186,7 +186,7 @@ export default function Customers() {
             ) : canManage ? (
               <Link
                 to="/customers/new"
-                className="inline-flex h-9 items-center rounded-xl bg-teal-700 px-3 text-sm text-white hover:bg-teal-800"
+                className="inline-flex h-9 items-center rounded-xl bg-erp-dark px-3 text-sm text-white hover:bg-erp-dark/90"
               >
                 New customer
               </Link>
@@ -215,7 +215,7 @@ export default function Customers() {
                     value={searchInput}
                     onChange={(e) => setSearchInput(e.target.value)}
                     placeholder="Search name, mobile, email..."
-                    className="h-9 rounded-xl border-slate-200 bg-slate-50 pl-9"
+                    className="h-9 rounded-xl border-[#b7d9cb] bg-[#eaf7f1] pl-9"
                   />
                 </div>
                 <NativeSelect
@@ -252,7 +252,7 @@ export default function Customers() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    className="rounded-xl border-slate-200 bg-white"
+                    className="rounded-xl border-[#b7d9cb] bg-[#f4fbf7]"
                     disabled={pagination.page <= 1 || isRefetching}
                     onClick={() =>
                       updateParam("page", String(pagination.page - 1))
@@ -264,7 +264,7 @@ export default function Customers() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    className="rounded-xl border-slate-200 bg-white"
+                    className="rounded-xl border-[#b7d9cb] bg-[#f4fbf7]"
                     disabled={
                       pagination.page >= pagination.totalPages || isRefetching
                     }
@@ -297,7 +297,7 @@ export default function Customers() {
                 {customers.map((customer) => (
                   <tr
                     key={customer.id}
-                    className="border-b border-slate-50 transition-colors last:border-0 hover:bg-slate-50/80"
+                    className="border-b border-slate-50 transition-colors last:border-0 hover:bg-[#eaf7f1]/80"
                   >
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
@@ -305,7 +305,7 @@ export default function Customers() {
                         <div className="min-w-0">
                           <Link
                             to={`/customers/${customer.id}`}
-                            className="font-semibold text-slate-800 hover:text-teal-700"
+                            className="font-semibold text-slate-800 hover:text-erp-dark"
                           >
                             {customer.name}
                           </Link>

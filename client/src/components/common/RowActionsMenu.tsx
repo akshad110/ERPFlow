@@ -24,7 +24,7 @@ export function RowActionsMenu({ actions }: RowActionsMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        className="inline-flex size-8 items-center justify-center rounded-lg text-slate-400 outline-none hover:bg-slate-100 hover:text-slate-700 focus-visible:ring-2 focus-visible:ring-teal-600/30"
+        className="inline-flex size-8 items-center justify-center rounded-lg text-slate-400 outline-none hover:bg-slate-100 hover:text-slate-700 focus-visible:ring-2 focus-visible:ring-erp/30"
         aria-label="Open row actions"
       >
         <MoreHorizontal className="size-4" />

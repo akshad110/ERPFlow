@@ -30,8 +30,10 @@ const Toaster = ({ ...props }: ToasterProps) => {
       toastOptions={{
         classNames: {
           toast: "cn-toast",
+          closeButton: "hidden",
         },
       }}
+      closeButton={false}
       {...props}
     />
   );

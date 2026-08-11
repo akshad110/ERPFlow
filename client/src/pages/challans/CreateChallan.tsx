@@ -226,7 +226,7 @@ export default function CreateChallan({ mode }: CreateChallanProps) {
           actions={
             <Link
               to="/challans"
-              className="inline-flex h-8 items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-700 hover:bg-slate-50"
+              className="inline-flex h-8 items-center gap-2 rounded-md border border-[#b7d9cb] bg-[#f4fbf7] px-3 text-sm text-[#2d4f47] hover:bg-[#eaf7f1]"
             >
               <ArrowLeft className="size-3.5" />
               Back
@@ -266,7 +266,7 @@ export default function CreateChallan({ mode }: CreateChallanProps) {
         actions={
           <Link
             to={backTo}
-            className="inline-flex h-8 items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-700 hover:bg-slate-50"
+            className="inline-flex h-8 items-center gap-2 rounded-md border border-[#b7d9cb] bg-[#f4fbf7] px-3 text-sm text-[#2d4f47] hover:bg-[#eaf7f1]"
           >
             <ArrowLeft className="size-3.5" />
             Back
@@ -307,7 +307,7 @@ export default function CreateChallan({ mode }: CreateChallanProps) {
           action={
             <Link
               to="/customers/new"
-              className="inline-flex h-9 items-center rounded-md bg-teal-700 px-3 text-sm text-white hover:bg-teal-800"
+              className="inline-flex h-9 items-center rounded-md bg-erp-dark px-3 text-sm text-white hover:bg-erp-dark/90"
             >
               Add customer
             </Link>
@@ -322,7 +322,7 @@ export default function CreateChallan({ mode }: CreateChallanProps) {
           action={
             <Link
               to="/products"
-              className="inline-flex h-9 items-center rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-700 hover:bg-slate-50"
+              className="inline-flex h-9 items-center rounded-md border border-[#b7d9cb] bg-[#f4fbf7] px-3 text-sm text-[#2d4f47] hover:bg-[#eaf7f1]"
             >
               View products
             </Link>
@@ -333,7 +333,7 @@ export default function CreateChallan({ mode }: CreateChallanProps) {
       {pickersReady && customers.length > 0 && products.length > 0 ? (
         <form
           onSubmit={onSubmit}
-          className="max-w-4xl space-y-5 rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6"
+          className="max-w-4xl space-y-5 surface-panel rounded-2xl p-5 sm:p-6"
           noValidate
         >
           <div className="grid gap-4 sm:grid-cols-2">
@@ -384,7 +384,7 @@ export default function CreateChallan({ mode }: CreateChallanProps) {
                 type="button"
                 variant="outline"
                 size="sm"
-                className="border-slate-200 bg-white"
+                className="border-[#b7d9cb] bg-[#f4fbf7]"
                 onClick={() => append({ productId: "", quantity: 1 })}
               >
                 <Plus className="size-3.5" />
@@ -408,7 +408,7 @@ export default function CreateChallan({ mode }: CreateChallanProps) {
                 return (
                   <div
                     key={field.id}
-                    className="grid gap-3 rounded-lg border border-slate-200 bg-slate-50/60 p-3 sm:grid-cols-[1.4fr_0.5fr_auto]"
+                    className="grid gap-3 rounded-lg border border-[#b7d9cb] bg-[#eaf7f1]/60 p-3 sm:grid-cols-[1.4fr_0.5fr_auto]"
                   >
                     <Field label="Product" error={productError}>
                       <NativeSelect {...register(`items.${index}.productId`)}>
@@ -452,7 +452,7 @@ export default function CreateChallan({ mode }: CreateChallanProps) {
                         type="number"
                         min={1}
                         step={1}
-                        className="bg-white"
+                        className="bg-[#f7fcf9]"
                         {...register(`items.${index}.quantity`, {
                           valueAsNumber: true,
                         })}
@@ -484,7 +484,7 @@ export default function CreateChallan({ mode }: CreateChallanProps) {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm">
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-[#b7d9cb] bg-[#eaf7f1] px-4 py-3 text-sm">
             <div className="text-slate-600">
               Est. qty{" "}
               <span className="font-semibold tabular-nums text-slate-800">
@@ -514,7 +514,7 @@ export default function CreateChallan({ mode }: CreateChallanProps) {
           <div className="flex flex-wrap items-center gap-2 border-t border-slate-100 pt-4">
             <Button
               type="submit"
-              className="bg-teal-700 text-white hover:bg-teal-800"
+              className="bg-erp-dark text-white hover:bg-erp-dark/90"
               disabled={
                 saveMutation.isPending ||
                 (isEdit && !isDirty) ||
@@ -532,7 +532,7 @@ export default function CreateChallan({ mode }: CreateChallanProps) {
             <Button
               type="button"
               variant="outline"
-              className="border-slate-200 bg-white"
+              className="border-[#b7d9cb] bg-[#f4fbf7]"
               onClick={() => navigate(backTo)}
             >
               Cancel

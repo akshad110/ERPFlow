@@ -109,7 +109,7 @@ export default function ChallanDetails() {
           actions={
             <Link
               to="/challans"
-              className="inline-flex h-8 items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-700 hover:bg-slate-50"
+              className="inline-flex h-8 items-center gap-2 rounded-md border border-[#b7d9cb] bg-[#f4fbf7] px-3 text-sm text-[#2d4f47] hover:bg-[#eaf7f1]"
             >
               <ArrowLeft className="size-3.5" />
               Back
@@ -125,7 +125,7 @@ export default function ChallanDetails() {
           action={
             <Link
               to="/challans"
-              className="inline-flex h-9 items-center rounded-md bg-teal-700 px-3 text-sm text-white hover:bg-teal-800"
+              className="inline-flex h-9 items-center rounded-md bg-erp-dark px-3 text-sm text-white hover:bg-erp-dark/90"
             >
               Back to challans
             </Link>
@@ -155,7 +155,7 @@ export default function ChallanDetails() {
           <div className="flex flex-wrap gap-2">
             <Link
               to="/challans"
-              className="inline-flex h-8 items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-700 hover:bg-slate-50"
+              className="inline-flex h-8 items-center gap-2 rounded-md border border-[#b7d9cb] bg-[#f4fbf7] px-3 text-sm text-[#2d4f47] hover:bg-[#eaf7f1]"
             >
               <ArrowLeft className="size-3.5" />
               Back
@@ -163,7 +163,7 @@ export default function ChallanDetails() {
             {canManage && challan.status === "DRAFT" ? (
               <Link
                 to={`/challans/${challan.id}/edit`}
-                className="inline-flex h-8 items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-700 hover:bg-slate-50"
+                className="inline-flex h-8 items-center gap-2 rounded-md border border-[#b7d9cb] bg-[#f4fbf7] px-3 text-sm text-[#2d4f47] hover:bg-[#eaf7f1]"
               >
                 <Pencil className="size-3.5" />
                 Edit
@@ -173,7 +173,7 @@ export default function ChallanDetails() {
               <Button
                 type="button"
                 size="sm"
-                className="bg-teal-700 text-white hover:bg-teal-800"
+                className="bg-erp-dark text-white hover:bg-erp-dark/90"
                 disabled={actionPending || items.length === 0}
                 onClick={() => {
                   const confirmed = window.confirm(
@@ -220,13 +220,13 @@ export default function ChallanDetails() {
       </div>
 
       {!canManage ? (
-        <div className="mb-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+        <div className="mb-4 rounded-xl border border-[#b7d9cb] bg-[#eaf7f1] px-4 py-3 text-sm text-slate-600">
           You can view challans. Confirm / cancel actions require Sales or Admin.
         </div>
       ) : null}
 
       <div className="grid gap-4 lg:grid-cols-[1fr_0.7fr]">
-        <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+        <section className="surface-panel overflow-hidden rounded-2xl">
           <div className="border-b border-slate-100 px-4 py-3">
             <h2 className="text-sm font-semibold text-slate-800">Line items</h2>
             <p className="text-xs text-slate-500">
@@ -244,7 +244,7 @@ export default function ChallanDetails() {
                     <Button
                       type="button"
                       size="sm"
-                      className="bg-teal-700 text-white hover:bg-teal-800"
+                      className="bg-erp-dark text-white hover:bg-erp-dark/90"
                       onClick={() => navigate(`/challans/${challan.id}/edit`)}
                     >
                       Edit draft
@@ -272,7 +272,7 @@ export default function ChallanDetails() {
                         {item.productName}
                       </td>
                       <td className="px-4 py-3 text-slate-500">{item.sku}</td>
-                      <td className="px-4 py-3 tabular-nums text-slate-700">
+                      <td className="px-4 py-3 tabular-nums text-[#2d4f47]">
                         {item.quantity}
                       </td>
                       <td className="px-4 py-3 tabular-nums text-slate-600">
@@ -290,7 +290,7 @@ export default function ChallanDetails() {
         </section>
 
         <aside className="space-y-4">
-          <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+          <section className="surface-panel rounded-2xl p-5">
             <h2 className="text-sm font-semibold text-slate-800">Summary</h2>
             <dl className="mt-4 space-y-3 text-sm">
               <div className="flex items-center justify-between gap-3">
@@ -307,14 +307,14 @@ export default function ChallanDetails() {
               </div>
               <div className="flex items-center justify-between gap-3 border-t border-slate-100 pt-3">
                 <dt className="text-slate-500">Updated</dt>
-                <dd className="text-slate-700">
+                <dd className="text-[#2d4f47]">
                   {formatDateTime(challan.updatedAt)}
                 </dd>
               </div>
             </dl>
           </section>
 
-          <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+          <section className="surface-panel rounded-2xl p-5">
             <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-800">
               <UserRound className="size-4 text-slate-400" />
               Customer
@@ -327,7 +327,7 @@ export default function ChallanDetails() {
             ) : null}
             <Link
               to={`/customers/${challan.customerId}`}
-              className="mt-3 inline-flex text-sm font-medium text-teal-700 hover:underline"
+              className="mt-3 inline-flex text-sm font-medium text-erp-dark hover:underline"
             >
               Open customer
             </Link>
@@ -344,7 +344,7 @@ export default function ChallanDetails() {
             </section>
           ) : null}
           {challan.status === "CANCELLED" ? (
-            <section className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
+            <section className="rounded-xl border border-[#b7d9cb] bg-[#eaf7f1] p-4 text-sm text-slate-600">
               This challan is cancelled and cannot be confirmed again.
             </section>
           ) : null}
